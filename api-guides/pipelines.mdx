@@ -1,0 +1,25 @@
+---
+title: "Pipelines"
+description: "Manage pipeline definitions and stages for workflow tracking."
+---
+
+# Pipelines
+
+Pipelines are typed and commonly used for contact lifecycle tracking.
+
+## Endpoints in this guide
+
+- `GET /api/pipelines?type=Contact`
+- `POST /api/pipelines?type=Contact`
+
+## Create pipeline
+
+```bash
+curl -X POST "https://your-instance.example.com/api/pipelines?type=Contact" \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Sales pipeline",
+    "stages": ["New", "Qualified", "Closed"]
+  }'
+```

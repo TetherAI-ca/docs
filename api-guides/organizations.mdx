@@ -1,0 +1,34 @@
+---
+title: "Organizations"
+description: "Create organizations and manage organization-level configuration."
+---
+
+# Organizations
+
+Organization endpoints handle tenancy boundaries and tenant settings.
+
+## Endpoints in this guide
+
+- `POST /api/organizations`
+- `GET /api/organizations`
+- `PUT /api/organizations/user`
+- `PUT /api/organizations/api-keys`
+- `PUT /api/organizations/sections/{id}`
+- `GET /api/organizations/dashboard`
+- `DELETE /api/organizations/{id}`
+
+## Create organization
+
+```bash
+curl -X POST https://your-instance.example.com/api/organizations \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Acme Realty"}'
+```
+
+## Get dashboard metrics
+
+```bash
+curl https://your-instance.example.com/api/organizations/dashboard \
+  -H "Authorization: Bearer <token>"
+```

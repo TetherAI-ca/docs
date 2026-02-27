@@ -1,0 +1,35 @@
+---
+title: "Applications"
+description: "Manage application entities and lifecycle transitions."
+---
+
+# Applications
+
+Applications endpoints support listing, filtering, creation, updates, and deletion.
+
+## Endpoints in this guide
+
+- `POST /api/applications/list`
+- `GET /api/applications`
+- `POST /api/applications`
+- `GET /api/applications/{id}`
+- `PUT /api/applications/{id}`
+- `DELETE /api/applications/{id}`
+
+## List applications
+
+```bash
+curl -X POST https://your-instance.example.com/api/applications/list \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{"page":1,"size":25}'
+```
+
+## Update application status
+
+```bash
+curl -X PUT https://your-instance.example.com/api/applications/12345 \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{"status":"Approved"}'
+```

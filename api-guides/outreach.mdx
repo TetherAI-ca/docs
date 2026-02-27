@@ -1,0 +1,31 @@
+---
+title: "Outreach webhook"
+description: "Forward and process outreach webhooks from Relay and partner systems."
+---
+
+# Outreach webhook
+
+The outreach webhook endpoint accepts normalized lead and message events.
+
+## Endpoint in this guide
+
+- `POST /api/webhook/outreach`
+
+## Example request
+
+```bash
+curl -X POST https://your-instance.example.com/api/webhook/outreach \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "configurationId": "cfg_123",
+    "phoneNumber": "+15551230000",
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "email": "jane@example.com"
+  }'
+```
+
+<Note>
+  Relay inbound service forwards parsed SendGrid payloads to this endpoint.
+</Note>

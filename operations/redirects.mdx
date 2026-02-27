@@ -1,0 +1,39 @@
+---
+title: "Redirect map"
+description: "Legacy-to-Mintlify URL mapping for cutover."
+---
+
+# Redirect map
+
+Use this mapping when redirecting from legacy docs URLs.
+
+| Legacy path | New path |
+| --- | --- |
+| `/` | `/` |
+| `/quickstart` | `/quickstart` |
+| `/authentication` | `/guides/authentication` |
+| `/contacts` | `/api-guides/contacts` |
+| `/conversations` | `/api-guides/conversations` |
+| `/messages` | `/api-guides/messages` |
+| `/organizations` | `/api-guides/organizations` |
+| `/users` | `/api-guides/users` |
+| `/automations` | `/api-guides/automations` |
+| `/pipelines` | `/api-guides/pipelines` |
+| `/applications` | `/api-guides/applications` |
+| `/ai` | `/api-guides/ai` |
+| `/outreach` | `/api-guides/outreach` |
+| `/groups` | `/api-guides/groups` |
+| `/attachments` | `/api-guides/attachments` |
+| `/errors` | `/api-guides/errors` |
+| `/sdks` | `/api-guides/sdks` |
+| `/webhooks` | `/api-guides/outreach` |
+
+## Mintlify config shape
+
+```json
+{
+  "redirects": [
+    { "source": "/authentication", "destination": "/guides/authentication" }
+  ]
+}
+```

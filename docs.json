@@ -1,13 +1,17 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "Tether Relay Documentation",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#0B4F4A",
+    "light": "#14B8A6",
+    "dark": "#0F766E"
   },
   "favicon": "/favicon.svg",
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
   "navigation": {
     "tabs": [
       {
@@ -18,31 +22,62 @@
             "pages": [
               "index",
               "quickstart",
-              "development"
+              "guides/authentication",
+              "guides/architecture"
             ]
           },
           {
-            "group": "Customization",
+            "group": "Relay application",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "relay/overview",
+              "relay/setup",
+              "relay/environment",
+              "relay/webchat-widget",
+              "relay/sendgrid-inbound"
             ]
           },
           {
-            "group": "Writing content",
+            "group": "Operations",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
+              "relay/operations",
+              "relay/troubleshooting",
+              "operations/launch-checklist",
+              "operations/redirects",
+              "operations/maintenance-model"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API guides",
+        "groups": [
+          {
+            "group": "Core resources",
+            "pages": [
+              "api-guides/contacts",
+              "api-guides/conversations",
+              "api-guides/messages",
+              "api-guides/applications"
             ]
           },
           {
-            "group": "AI tools",
+            "group": "Platform",
             "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "api-guides/organizations",
+              "api-guides/users",
+              "api-guides/groups",
+              "api-guides/attachments",
+              "api-guides/errors",
+              "api-guides/sdks"
+            ]
+          },
+          {
+            "group": "Automation and AI",
+            "pages": [
+              "api-guides/automations",
+              "api-guides/pipelines",
+              "api-guides/ai",
+              "api-guides/outreach"
             ]
           }
         ]
@@ -51,19 +86,14 @@
         "tab": "API reference",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Overview",
             "pages": [
               "api-reference/introduction"
             ]
           },
           {
-            "group": "Endpoint examples",
-            "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
-            ]
+            "group": "Endpoints",
+            "openapi": "api-reference/openapi.yaml"
           }
         ]
       }
@@ -71,52 +101,117 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
+          "anchor": "Relay app",
+          "href": "https://github.com/tether-ai",
+          "icon": "code"
         },
         {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "Mintlify docs",
+          "href": "https://mintlify.com/docs",
+          "icon": "book-open-cover"
         }
       ]
     }
   },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
-  },
   "navbar": {
     "links": [
       {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "label": "Status",
+        "href": "https://status.sendgrid.com"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "label": "Contact support",
+      "href": "mailto:support@tether.ai"
     }
   },
+  "api": {
+    "playground": {
+      "display": "interactive"
+    }
+  },
+  "redirects": [
+    {
+      "source": "/authentication",
+      "destination": "/guides/authentication"
+    },
+    {
+      "source": "/contacts",
+      "destination": "/api-guides/contacts"
+    },
+    {
+      "source": "/conversations",
+      "destination": "/api-guides/conversations"
+    },
+    {
+      "source": "/messages",
+      "destination": "/api-guides/messages"
+    },
+    {
+      "source": "/organizations",
+      "destination": "/api-guides/organizations"
+    },
+    {
+      "source": "/users",
+      "destination": "/api-guides/users"
+    },
+    {
+      "source": "/automations",
+      "destination": "/api-guides/automations"
+    },
+    {
+      "source": "/pipelines",
+      "destination": "/api-guides/pipelines"
+    },
+    {
+      "source": "/applications",
+      "destination": "/api-guides/applications"
+    },
+    {
+      "source": "/ai",
+      "destination": "/api-guides/ai"
+    },
+    {
+      "source": "/outreach",
+      "destination": "/api-guides/outreach"
+    },
+    {
+      "source": "/groups",
+      "destination": "/api-guides/groups"
+    },
+    {
+      "source": "/attachments",
+      "destination": "/api-guides/attachments"
+    },
+    {
+      "source": "/errors",
+      "destination": "/api-guides/errors"
+    },
+    {
+      "source": "/sdks",
+      "destination": "/api-guides/sdks"
+    },
+    {
+      "source": "/webhooks",
+      "destination": "/api-guides/outreach"
+    }
+  ],
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "github": "https://github.com/tether-ai"
     }
   }
 }

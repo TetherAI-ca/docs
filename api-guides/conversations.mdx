@@ -1,0 +1,37 @@
+---
+title: "Conversations"
+description: "Query, update, resolve, and manage conversation threads."
+---
+
+# Conversations
+
+Conversations represent threaded communication history across channels.
+
+## Endpoints in this guide
+
+- `POST /api/conversation/all`
+- `POST /api/conversation/messages`
+- `GET /api/conversation/{id}`
+- `GET /api/conversation/{id}/messages`
+- `PUT /api/conversation/{id}`
+- `PUT /api/conversation/{id}/resolve`
+- `POST /api/conversation/unseen`
+- `DELETE /api/conversation`
+
+## Get a conversation by ID
+
+```bash
+curl https://your-instance.example.com/api/conversation/12345 \
+  -H "Authorization: Bearer <token>"
+```
+
+## Resolve a conversation
+
+```bash
+curl -X PUT https://your-instance.example.com/api/conversation/12345/resolve \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{"isResolved": true}'
+```
+
+For message payload structure, see [Messages](/api-guides/messages).

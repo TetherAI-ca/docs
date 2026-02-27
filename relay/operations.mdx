@@ -1,0 +1,35 @@
+---
+title: "Relay operations"
+description: "Runbook for operating Relay services in staging and production."
+---
+
+# Relay operations
+
+## Service checklist
+
+- Confirm environment variables are set for target environment.
+- Confirm MongoDB connectivity for inbound service.
+- Confirm upstream API reachability from Relay network.
+- Confirm webhook endpoint and TLS certificate are healthy.
+
+## Recommended monitoring
+
+- Request volume for `POST /webhook/sendgrid`.
+- Non-2xx response rate by endpoint.
+- Forwarding latency to upstream API.
+- Socket connection success rate for webchat clients.
+
+## Logging expectations
+
+- Request IDs for inbound requests.
+- Sender/recipient metadata for traceability.
+- Upstream response status and error payloads.
+- Service startup and shutdown events.
+
+## Incident response baseline
+
+1. Verify health endpoints.
+2. Check recent deploys and config changes.
+3. Confirm SendGrid inbound parse settings.
+4. Replay sample webhook payload against service.
+5. Escalate with logs and request samples.

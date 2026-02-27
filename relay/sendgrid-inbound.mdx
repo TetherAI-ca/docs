@@ -1,0 +1,55 @@
+---
+title: "SendGrid inbound service"
+description: "Configure and operate the SendGrid inbound parser and webhook forwarder."
+---
+
+# SendGrid inbound service
+
+The inbound service accepts SendGrid parse webhook payloads and forwards normalized data to upstream outreach APIs.
+
+## Implemented routes
+
+- `POST /webhook/sendgrid`
+- `GET /webhook/health`
+- `GET /`
+
+Source files:
+
+- `tools/sendgrid-inbound/src/index.ts`
+- `tools/sendgrid-inbound/src/routes/webhook.routes.ts`
+- `tools/sendgrid-inbound/src/controllers/webhook.controller.ts`
+
+## Local test request
+
+```bash
+curl -X POST "http://localhost:3500/webhook/sendgrid" \
+  -F "from=sender@example.com" \
+  -F "to=recipient@inbound.tether.com" \
+  -F "subject=Email with attachment" \
+  -F "text=Hello from SendGrid inbound" \
+  -F "attachment1=@./testfile.txt"
+```
+
+## Health check
+
+```bash
+curl -s http://localhost:3500/webhook/health
+```
+
+```json
+{ "status": "ok" }
+```
+
+## Forwarding behavior
+
+When parsing succeeds, service forwards data to:
+
+- `POST ${TETHER_API_URL}/api/webhook/outreach`
+
+The payload includes routing configuration and pre-extracted fields needed by the upstream API.
+
+## Failure handling
+
+- Invalid webhook payloads return 4xx responses.
+- Upstream forwarding failures are logged with status and response payload.
+- MongoDB connection failures terminate process startup.

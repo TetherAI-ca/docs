@@ -1,0 +1,2427 @@
+openapi: 3.1.0
+info:
+  title: Tether Relay and Tether API
+  version: 1.0.0
+  description: OpenAPI contract for Relay webhook services and core Tether API resources used by current guides.
+servers:
+    - url: https://your-instance.example.com
+      description: Production
+    - url: http://localhost:3500
+      description: Local Relay service
+tags:
+    - name: Relay Webhooks
+    - name: Auth
+    - name: Contacts
+    - name: Conversations
+    - name: Messages
+    - name: Organizations
+    - name: Users
+    - name: Automations
+    - name: Pipelines
+    - name: Applications
+    - name: AI
+    - name: Outreach
+    - name: Attachments v1
+    - name: Groups v1
+paths:
+  /api/applications/{id}:
+      delete:
+            operationId: delete_api_applications_id
+            summary: Delete api applications by id
+            tags:
+                            - Applications
+            parameters:
+                            - in: path
+                              name: id
+                              required: true
+                              schema:
+                                          type: string
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            security:
+                            - bearerAuth: []
+      get:
+            operationId: get_api_applications_id
+            summary: Get api applications by id
+            tags:
+                            - Applications
+            parameters:
+                            - in: path
+                              name: id
+                              required: true
+                              schema:
+                                          type: string
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            security:
+                            - bearerAuth: []
+      put:
+            operationId: put_api_applications_id
+            summary: Put api applications by id
+            tags:
+                            - Applications
+            parameters:
+                            - in: path
+                              name: id
+                              required: true
+                              schema:
+                                          type: string
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: false
+                    content:
+                              application/json:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+  /api/automations/{id}:
+      delete:
+            operationId: delete_api_automations_id
+            summary: Delete api automations by id
+            tags:
+                            - Automations
+            parameters:
+                            - in: path
+                              name: id
+                              required: true
+                              schema:
+                                          type: string
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            security:
+                            - bearerAuth: []
+      put:
+            operationId: put_api_automations_id
+            summary: Put api automations by id
+            tags:
+                            - Automations
+            parameters:
+                            - in: path
+                              name: id
+                              required: true
+                              schema:
+                                          type: string
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: false
+                    content:
+                              application/json:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+  /api/contacts/{id}:
+      delete:
+            operationId: delete_api_contacts_id
+            summary: Delete api contacts by id
+            tags:
+                            - Contacts
+            parameters:
+                            - in: path
+                              name: id
+                              required: true
+                              schema:
+                                          type: string
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            security:
+                            - bearerAuth: []
+      get:
+            operationId: get_api_contacts_id
+            summary: Get api contacts by id
+            tags:
+                            - Contacts
+            parameters:
+                            - in: path
+                              name: id
+                              required: true
+                              schema:
+                                          type: string
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            security:
+                            - bearerAuth: []
+  /api/conversation:
+      delete:
+            operationId: delete_api_conversation
+            summary: Delete api conversation
+            tags:
+                            - Conversations
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            security:
+                            - bearerAuth: []
+  /api/organizations/{id}:
+      delete:
+            operationId: delete_api_organizations_id
+            summary: Delete api organizations by id
+            tags:
+                            - Organizations
+            parameters:
+                            - in: path
+                              name: id
+                              required: true
+                              schema:
+                                          type: string
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            security:
+                            - bearerAuth: []
+  /api/user/{id}:
+      delete:
+            operationId: delete_api_user_id
+            summary: Delete api user by id
+            tags:
+                            - Users
+            parameters:
+                            - in: path
+                              name: id
+                              required: true
+                              schema:
+                                          type: string
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            security:
+                            - bearerAuth: []
+  /v1/attachments/{attachmentId}:
+      delete:
+            operationId: delete_v1_attachments_attachmentId
+            summary: Delete v1 attachments by id
+            tags:
+                            - Attachments v1
+            parameters:
+                            - in: path
+                              name: attachmentId
+                              required: true
+                              schema:
+                                          type: string
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            security:
+                            - bearerAuth: []
+      get:
+            operationId: get_v1_attachments_attachmentId
+            summary: Get v1 attachments by id
+            tags:
+                            - Attachments v1
+            parameters:
+                            - in: path
+                              name: attachmentId
+                              required: true
+                              schema:
+                                          type: string
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            security:
+                            - bearerAuth: []
+      put:
+            operationId: put_v1_attachments_attachmentId
+            summary: Put v1 attachments by id
+            tags:
+                            - Attachments v1
+            parameters:
+                            - in: path
+                              name: attachmentId
+                              required: true
+                              schema:
+                                          type: string
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: false
+                    content:
+                              application/json:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+  /v1/groups/{groupId}:
+      delete:
+            operationId: delete_v1_groups_groupId
+            summary: Delete v1 groups by id
+            tags:
+                            - Groups v1
+            parameters:
+                            - in: path
+                              name: groupId
+                              required: true
+                              schema:
+                                          type: string
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            security:
+                            - bearerAuth: []
+      get:
+            operationId: get_v1_groups_groupId
+            summary: Get v1 groups by id
+            tags:
+                            - Groups v1
+            parameters:
+                            - in: path
+                              name: groupId
+                              required: true
+                              schema:
+                                          type: string
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            security:
+                            - bearerAuth: []
+      put:
+            operationId: put_v1_groups_groupId
+            summary: Put v1 groups by id
+            tags:
+                            - Groups v1
+            parameters:
+                            - in: path
+                              name: groupId
+                              required: true
+                              schema:
+                                          type: string
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: false
+                    content:
+                              application/json:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+  /api/applications:
+      get:
+            operationId: get_api_applications
+            summary: Get api applications
+            tags:
+                            - Applications
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            security:
+                            - bearerAuth: []
+      post:
+            operationId: post_api_applications
+            summary: Post api applications
+            tags:
+                            - Applications
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: false
+                    content:
+                              application/json:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+  /api/auth/verify-token:
+      get:
+            operationId: get_api_auth_verify_token
+            summary: Get api auth verify-token
+            tags:
+                            - Auth
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            security:
+                            - bearerAuth: []
+  /api/automations:
+      get:
+            operationId: get_api_automations
+            summary: Get api automations
+            tags:
+                            - Automations
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            security:
+                            - bearerAuth: []
+      post:
+            operationId: post_api_automations
+            summary: Post api automations
+            tags:
+                            - Automations
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: false
+                    content:
+                              application/json:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+  /api/contacts:
+      get:
+            operationId: get_api_contacts
+            summary: Get api contacts
+            tags:
+                            - Contacts
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            security:
+                            - bearerAuth: []
+  /api/conversation/{id}:
+      get:
+            operationId: get_api_conversation_id
+            summary: Get api conversation by id
+            tags:
+                            - Conversations
+            parameters:
+                            - in: path
+                              name: id
+                              required: true
+                              schema:
+                                          type: string
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            security:
+                            - bearerAuth: []
+      put:
+            operationId: put_api_conversation_id
+            summary: Put api conversation by id
+            tags:
+                            - Conversations
+            parameters:
+                            - in: path
+                              name: id
+                              required: true
+                              schema:
+                                          type: string
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: false
+                    content:
+                              application/json:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+  /api/conversation/{id}/messages:
+      get:
+            operationId: get_api_conversation_id_messages
+            summary: Get api conversation by id messages
+            tags:
+                            - Conversations
+            parameters:
+                            - in: path
+                              name: id
+                              required: true
+                              schema:
+                                          type: string
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            security:
+                            - bearerAuth: []
+  /api/organizations:
+      get:
+            operationId: get_api_organizations
+            summary: Get api organizations
+            tags:
+                            - Organizations
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            security:
+                            - bearerAuth: []
+      post:
+            operationId: post_api_organizations
+            summary: Post api organizations
+            tags:
+                            - Organizations
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: false
+                    content:
+                              application/json:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+  /api/organizations/dashboard:
+      get:
+            operationId: get_api_organizations_dashboard
+            summary: Get api organizations dashboard
+            tags:
+                            - Organizations
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            security:
+                            - bearerAuth: []
+  /api/pipelines:
+      get:
+            operationId: get_api_pipelines
+            summary: Get api pipelines
+            tags:
+                            - Pipelines
+            parameters:
+                            - in: query
+                              name: type
+                              required: false
+                              schema:
+                                          type: string
+                                          example: Contact
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            security:
+                            - bearerAuth: []
+      post:
+            operationId: post_api_pipelines
+            summary: Post api pipelines
+            tags:
+                            - Pipelines
+            parameters:
+                            - in: query
+                              name: type
+                              required: false
+                              schema:
+                                          type: string
+                                          example: Contact
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: false
+                    content:
+                              application/json:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+  /api/user/profile:
+      get:
+            operationId: get_api_user_profile
+            summary: Get api user profile
+            tags:
+                            - Users
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            security:
+                            - bearerAuth: []
+      put:
+            operationId: put_api_user_profile
+            summary: Put api user profile
+            tags:
+                            - Users
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: false
+                    content:
+                              application/json:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+  /v1/attachments:
+      get:
+            operationId: get_v1_attachments
+            summary: Get v1 attachments
+            tags:
+                            - Attachments v1
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: true
+                    content:
+                              multipart/form-data:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+      post:
+            operationId: post_v1_attachments
+            summary: Post v1 attachments
+            tags:
+                            - Attachments v1
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: true
+                    content:
+                              multipart/form-data:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+  /v1/groups:
+      get:
+            operationId: get_v1_groups
+            summary: Get v1 groups
+            tags:
+                            - Groups v1
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            security:
+                            - bearerAuth: []
+      post:
+            operationId: post_v1_groups
+            summary: Post v1 groups
+            tags:
+                            - Groups v1
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: false
+                    content:
+                              application/json:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+  /api/automations/{id}/preference:
+      patch:
+            operationId: patch_api_automations_id_preference
+            summary: Patch api automations by id preference
+            tags:
+                            - Automations
+            parameters:
+                            - in: path
+                              name: id
+                              required: true
+                              schema:
+                                          type: string
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: false
+                    content:
+                              application/json:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+  /api/ai/playground:
+      post:
+            operationId: post_api_ai_playground
+            summary: Post api ai playground
+            tags:
+                            - AI
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: false
+                    content:
+                              application/json:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+  /api/ai/process:
+      post:
+            operationId: post_api_ai_process
+            summary: Post api ai process
+            tags:
+                            - AI
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: false
+                    content:
+                              application/json:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+  /api/applications/list:
+      post:
+            operationId: post_api_applications_list
+            summary: Post api applications list
+            tags:
+                            - Applications
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: false
+                    content:
+                              application/json:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+  /api/auth/login:
+      post:
+            operationId: post_api_auth_login
+            summary: Post api auth login
+            tags:
+                            - Auth
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: false
+                    content:
+                              application/json:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+  /api/auth/register:
+      post:
+            operationId: post_api_auth_register
+            summary: Post api auth register
+            tags:
+                            - Auth
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: false
+                    content:
+                              application/json:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+  /api/contact:
+      post:
+            operationId: post_api_contact
+            summary: Post api contact
+            tags:
+                            - Contacts
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: false
+                    content:
+                              application/json:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+      put:
+            operationId: put_api_contact
+            summary: Put api contact
+            tags:
+                            - Contacts
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: false
+                    content:
+                              application/json:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+  /api/contacts/phoneNumber:
+      post:
+            operationId: post_api_contacts_phoneNumber
+            summary: Post api contacts phoneNumber
+            tags:
+                            - Contacts
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: false
+                    content:
+                              application/json:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+  /api/conversation/all:
+      post:
+            operationId: post_api_conversation_all
+            summary: Post api conversation all
+            tags:
+                            - Conversations
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: false
+                    content:
+                              application/json:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+  /api/conversation/messages:
+      post:
+            operationId: post_api_conversation_messages
+            summary: Post api conversation messages
+            tags:
+                            - Conversations
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: false
+                    content:
+                              application/json:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+  /api/conversation/unseen:
+      post:
+            operationId: post_api_conversation_unseen
+            summary: Post api conversation unseen
+            tags:
+                            - Conversations
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: false
+                    content:
+                              application/json:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+  /api/messages/quick-bulk-send:
+      post:
+            operationId: post_api_messages_quick_bulk_send
+            summary: Post api messages quick-bulk-send
+            tags:
+                            - Messages
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: false
+                    content:
+                              application/json:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+  /api/messages/send:
+      post:
+            operationId: post_api_messages_send
+            summary: Post api messages send
+            tags:
+                            - Messages
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: false
+                    content:
+                              application/json:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+  /api/messages/upload-attachment:
+      post:
+            operationId: post_api_messages_upload_attachment
+            summary: Post api messages upload-attachment
+            tags:
+                            - Messages
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: true
+                    content:
+                              multipart/form-data:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+  /api/user/api-key/regenerate:
+      post:
+            operationId: post_api_user_api_key_regenerate
+            summary: Post api user api-key regenerate
+            tags:
+                            - Users
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: false
+                    content:
+                              application/json:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+  /api/user/list:
+      post:
+            operationId: post_api_user_list
+            summary: Post api user list
+            tags:
+                            - Users
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: false
+                    content:
+                              application/json:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+  /api/webhook/outreach:
+      post:
+            operationId: post_api_webhook_outreach
+            summary: Post api webhook outreach
+            tags:
+                            - Outreach
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: false
+                    content:
+                              application/json:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+  /api/conversation/{id}/resolve:
+      put:
+            operationId: put_api_conversation_id_resolve
+            summary: Put api conversation by id resolve
+            tags:
+                            - Conversations
+            parameters:
+                            - in: path
+                              name: id
+                              required: true
+                              schema:
+                                          type: string
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: false
+                    content:
+                              application/json:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+  /api/organizations/api-keys:
+      put:
+            operationId: put_api_organizations_api_keys
+            summary: Put api organizations api-keys
+            tags:
+                            - Organizations
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: false
+                    content:
+                              application/json:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+  /api/organizations/sections/{id}:
+      put:
+            operationId: put_api_organizations_sections_id
+            summary: Put api organizations sections by id
+            tags:
+                            - Organizations
+            parameters:
+                            - in: path
+                              name: id
+                              required: true
+                              schema:
+                                          type: string
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: false
+                    content:
+                              application/json:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+  /api/organizations/user:
+      put:
+            operationId: put_api_organizations_user
+            summary: Put api organizations user
+            tags:
+                            - Organizations
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: false
+                    content:
+                              application/json:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+            security:
+                            - bearerAuth: []
+  /:
+      get:
+            operationId: get_
+            summary: Get 
+            tags:
+                            - Relay Webhooks
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+  /webhook/health:
+      get:
+            operationId: get_webhook_health
+            summary: Get webhook health
+            tags:
+                            - Relay Webhooks
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+  /webhook/sendgrid:
+      post:
+            operationId: post_webhook_sendgrid
+            summary: Post webhook sendgrid
+            tags:
+                            - Relay Webhooks
+            responses:
+                    200:
+                              description: Successful response
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiResponse"
+                    400:
+                              description: Bad request
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    401:
+                              description: Unauthorized
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+                    500:
+                              description: Internal server error
+                              content:
+                                          application/json:
+                                                        schema:
+                                                                        $ref: "#/components/schemas/ApiError"
+            requestBody:
+                    required: true
+                    content:
+                              multipart/form-data:
+                                          schema:
+                                                        type: object
+                                                        additionalProperties: true
+components:
+  securitySchemes:
+      bearerAuth:
+            type: http
+            scheme: bearer
+            bearerFormat: JWT
+  schemas:
+      ApiResponse:
+            type: object
+            additionalProperties: true
+            description: Generic response envelope. Endpoint-specific fields are intentionally open.
+      ApiError:
+            type: object
+            properties:
+                    error:
+                              type: object
+                              properties:
+                                          code:
+                                                        type: string
+                                          message:
+                                                        type: string
+                              additionalProperties: true
+            additionalProperties: true

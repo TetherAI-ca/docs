@@ -1,0 +1,34 @@
+---
+title: "Maintenance model"
+description: "Ownership, review cadence, and documentation quality controls."
+---
+
+# Maintenance model
+
+## Ownership
+
+- Platform team owns Relay setup and operations docs.
+- API team owns OpenAPI contract and API guide accuracy.
+- Docs owner approves navigation and style changes.
+
+## Change management
+
+- Any API behavior change requires OpenAPI update in same PR.
+- Any new endpoint requires either guide coverage or explicit defer note.
+- Breaking changes require changelog and migration note.
+
+## Review cadence
+
+- Weekly: broken links and top-traffic page checks.
+- Monthly: stale content review and screenshot refresh.
+- Quarterly: architecture and onboarding path review.
+
+## CI gates
+
+Run on pull requests:
+
+```bash
+mint broken-links
+mint openapi-check api-reference/openapi.yaml
+mint validate
+```

@@ -1,0 +1,39 @@
+---
+title: "Messages"
+description: "Send direct messages, bulk messages, and message attachments."
+---
+
+# Messages
+
+Use messaging endpoints for direct sends, bulk sends, and attachment uploads.
+
+## Endpoints in this guide
+
+- `POST /api/messages/send`
+- `POST /api/messages/quick-bulk-send`
+- `POST /api/messages/upload-attachment`
+- `GET /api/conversation/{id}/messages`
+
+## Send a direct message
+
+```bash
+curl -X POST https://your-instance.example.com/api/messages/send \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "contactId": "507f1f77bcf86cd799439011",
+    "content": "Hello from API"
+  }'
+```
+
+## Upload an attachment
+
+```bash
+curl -X POST https://your-instance.example.com/api/messages/upload-attachment \
+  -H "Authorization: Bearer <token>" \
+  -F "file=@./invoice.pdf"
+```
+
+<Note>
+  Uploaded attachments are commonly referenced by later message-send requests.
+</Note>

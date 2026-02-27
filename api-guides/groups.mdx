@@ -1,0 +1,29 @@
+---
+title: "Groups"
+description: "Create and manage group entities in v1 endpoints."
+---
+
+# Groups
+
+Groups endpoints are currently versioned under `/v1`.
+
+## Endpoints in this guide
+
+- `GET /v1/groups`
+- `POST /v1/groups`
+- `GET /v1/groups/{id}`
+- `PUT /v1/groups/{id}`
+- `DELETE /v1/groups/{id}`
+
+## Create group
+
+```bash
+curl -X POST https://your-instance.example.com/v1/groups \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Priority leads"}'
+```
+
+<Info>
+  Keep `/v1` resources separate from `/api` resources when writing client SDK wrappers.
+</Info>

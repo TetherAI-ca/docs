@@ -1,0 +1,32 @@
+---
+title: "Errors"
+description: "Interpret API status codes and structured error responses."
+---
+
+# Errors
+
+Use status codes and response payloads together when diagnosing failures.
+
+## Status code classes
+
+- `2xx`: request completed successfully.
+- `4xx`: client input, auth, or permissions issue.
+- `5xx`: server-side failure.
+
+## Typical error payload
+
+```json
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "Missing required field: phoneNumber"
+  }
+}
+```
+
+## Common remediation path
+
+1. Validate required fields and value formats.
+2. Confirm bearer token and access role.
+3. Retry with request ID correlation in logs.
+4. Escalate with full request/response samples.

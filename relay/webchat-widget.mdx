@@ -1,0 +1,45 @@
+---
+title: "Webchat widget"
+description: "Embed and configure the Tether webchat widget with Socket.io."
+---
+
+# Webchat widget
+
+The webchat widget is a standalone script at `client/public/webchat-widget.js`.
+
+## Include required scripts
+
+```html
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+<script src="https://your-cdn.example.com/webchat-widget.js"></script>
+```
+
+## Initialize widget
+
+```html
+<script>
+  window.TetherChat.init({
+    webchatConfigId: 'YOUR_CONFIG_ID',
+    apiUrl: 'https://your-api.example.com',
+    name: 'Support assistant',
+    starterMessage: 'Hi, how can we help?',
+    primaryColor: '#0F766E',
+  });
+</script>
+```
+
+## Runtime behavior
+
+- Generates and persists a browser device ID.
+- Opens socket connection on `/socket/webchat`.
+- Handles realtime events like `send_message_to_webchat` and `csat_request`.
+- Tracks unread message count and tab visibility for notifications.
+- Supports mobile viewport handling, including Android keyboard behavior.
+
+## Operational notes
+
+- Ensure Socket.io CDN script loads before widget initialization.
+- Keep widget host and API host CORS settings aligned.
+- Validate CSP headers allow script and websocket connections.
+
+For service-side operations, see [Relay operations](/relay/operations).

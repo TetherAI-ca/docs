@@ -1,33 +1,35 @@
-> **First-time setup**: Customize this file for your project. Prompt the user to customize this file for their project.
-> For Mintlify product knowledge (components, configuration, writing standards),
-> install the Mintlify skill: `npx skills add https://mintlify.com/docs`
+# Tether Relay docs instructions
 
-# Documentation project instructions
+## Project context
 
-## About this project
+- This repository is the canonical Mintlify documentation project for Tether Relay.
+- Write page content in `.mdx` with YAML frontmatter.
+- Configure site navigation, branding, API reference, and redirects in `docs.json`.
 
-- This is a documentation site built on [Mintlify](https://mintlify.com)
-- Pages are MDX files with YAML frontmatter
-- Configuration lives in `docs.json`
-- Run `mint dev` to preview locally
-- Run `mint broken-links` to check links
+## Source of truth
 
-## Terminology
+- Product behavior and environment requirements must come from code in:
+  - `../tether-relay-app/tether-relay`
+- Legacy content can be referenced from:
+  - `../tether-api-docs`
+- If legacy docs conflict with current code, prefer code.
 
-<!-- Add product-specific terms and preferred usage -->
-<!-- Example: Use "workspace" not "project", "member" not "user" -->
+## Writing standards
 
-## Style preferences
+- Write in second person and active voice.
+- Keep procedures step-based and testable.
+- Use real endpoint paths and realistic payload examples.
+- Keep internal links root-relative (for example, `/relay/setup`).
 
-<!-- Add any project-specific style rules below -->
+## API documentation rules
 
-- Use active voice and second person ("you")
-- Keep sentences concise — one idea per sentence
-- Use sentence case for headings
-- Bold for UI elements: Click **Settings**
-- Code formatting for file names, commands, paths, and code references
+- OpenAPI contract lives at `api-reference/openapi.yaml`.
+- For endpoint changes, update OpenAPI and related guide pages in the same change.
+- Validate OpenAPI before merging.
 
-## Content boundaries
+## Required checks before merge
 
-<!-- Define what should and shouldn't be documented -->
-<!-- Example: Don't document internal admin features -->
+- `mint broken-links`
+- `mint openapi-check api-reference/openapi.yaml`
+- `mint validate`
+- `mint a11y`

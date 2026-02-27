@@ -1,0 +1,35 @@
+---
+title: "Environment variables"
+description: "Required and optional environment variables for Relay services."
+---
+
+# Environment variables
+
+Use explicit environment configuration for every deployment target.
+
+## SendGrid inbound service
+
+Source: `tools/sendgrid-inbound/src/config.ts`.
+
+| Variable | Required | Default | Purpose |
+| --- | --- | --- | --- |
+| `PORT` | No | `3500` | HTTP server port |
+| `LOG_LEVEL` | No | `info` | Logging verbosity |
+| `INBOUND_EMAIL_DOMAIN` | No | `leads.staging.rvai.tetherai.ca` | Domain used for inbound routing logic |
+| `MONGODB_URI` | Yes | `""` | MongoDB connection string |
+| `TETHER_API_URL` | No | `http://localhost:2212` | Upstream API base URL for forwarding |
+
+## Relay client
+
+Reference the client `.env` and runtime checks in `client/src/shared/lib/api.ts`.
+
+| Variable | Required | Purpose |
+| --- | --- | --- |
+| `VITE_BACKEND_URL` | Yes | Base URL for API requests |
+| `VITE_SOCKET_SERVER_URL` | Yes | Socket server URL |
+| `VITE_OTEL_ENABLED` | No | Enable browser telemetry |
+| `VITE_APP_VERSION` | No | Client version metadata |
+
+<Warning>
+  Do not commit real credentials or production keys to source control.
+</Warning>

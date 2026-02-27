@@ -1,0 +1,32 @@
+---
+title: "Architecture"
+description: "Understand Tether Relay system components and request flow."
+---
+
+# Architecture
+
+Tether Relay combines API services, inbound processing services, and client surfaces.
+
+## Core components
+
+- Relay frontend (`client`): React application for operations and configuration.
+- SendGrid inbound service (`tools/sendgrid-inbound`): receives multipart email webhook payloads.
+- Upstream Tether API (`/api/*`): source of truth for business entities and workflow actions.
+- Webchat runtime (`client/public/webchat-widget.js`): embeddable chat widget with Socket.io.
+
+## Inbound email flow
+
+1. SendGrid posts multipart payload to `POST /webhook/sendgrid`.
+2. Relay parses sender, recipient, message body, and attachments.
+3. Relay extracts routing configuration from inbound address.
+4. Relay forwards normalized payload to `/api/webhook/outreach` on upstream API.
+5. Upstream API applies business logic and persists conversation/contact events.
+
+## Realtime webchat flow
+
+1. Embedded widget initializes with `webchatConfigId` and `apiUrl`.
+2. Widget establishes Socket.io connection on `/socket/webchat`.
+3. Messages stream bidirectionally through socket events.
+4. Widget tracks connection status, typing signals, and CSAT prompts.
+
+See [Webchat widget](/relay/webchat-widget) and [SendGrid inbound](/relay/sendgrid-inbound) for implementation details.

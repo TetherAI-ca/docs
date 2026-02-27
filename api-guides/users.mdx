@@ -1,0 +1,32 @@
+---
+title: "Users"
+description: "Manage user profiles, API keys, user listing, and user deletion."
+---
+
+# Users
+
+User endpoints provide profile management and account operations.
+
+## Endpoints in this guide
+
+- `GET /api/user/profile`
+- `PUT /api/user/profile`
+- `POST /api/user/api-key/regenerate`
+- `POST /api/user/list`
+- `DELETE /api/user/{id}`
+
+## Update user profile
+
+```bash
+curl -X PUT https://your-instance.example.com/api/user/profile \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{"fullName":"Jane Doe","phoneNumber":"+15551230000"}'
+```
+
+## Regenerate API key
+
+```bash
+curl -X POST https://your-instance.example.com/api/user/api-key/regenerate \
+  -H "Authorization: Bearer <token>"
+```

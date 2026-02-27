@@ -1,0 +1,22 @@
+---
+title: "AI"
+description: "Use AI processing and playground endpoints for conversation workflows."
+---
+
+# AI
+
+AI endpoints support prompt-driven processing and playground experimentation.
+
+## Endpoints in this guide
+
+- `POST /api/ai/process`
+- `POST /api/ai/playground`
+
+## Process conversation context
+
+```bash
+curl -X POST https://your-instance.example.com/api/ai/process \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{"conversationId":"507f1f77bcf86cd799439011"}'
+```

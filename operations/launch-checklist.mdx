@@ -1,0 +1,33 @@
+---
+title: "Launch checklist"
+description: "Pre-launch and cutover checklist for publishing Mintlify docs."
+---
+
+# Launch checklist
+
+## Content readiness
+
+- All required pages have `title` and `description` frontmatter.
+- Navigation entries in `docs.json` map to real files.
+- API guides and API reference are consistent.
+
+## Validation gates
+
+```bash
+mint broken-links
+mint a11y
+mint openapi-check api-reference/openapi.yaml
+mint validate
+```
+
+## Deployment readiness
+
+- Domain and DNS configured in Mintlify dashboard.
+- Preview builds healthy on PR branches.
+- Redirects from legacy paths configured.
+
+## Post-launch checks
+
+- Verify top 20 legacy URLs redirect correctly.
+- Verify search indexing and API playground behavior.
+- Verify no critical 404s in first 24 hours.

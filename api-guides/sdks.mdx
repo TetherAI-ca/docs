@@ -1,0 +1,42 @@
+---
+title: "SDK and client patterns"
+description: "Implementation patterns for integrating Tether APIs from multiple languages."
+---
+
+# SDK and client patterns
+
+Use a shared HTTP client abstraction that handles auth and retries consistently.
+
+## Baseline HTTP requirements
+
+- Base URL per environment.
+- Bearer token injection on authenticated calls.
+- Structured parsing for non-2xx responses.
+- Timeouts and idempotent retry policy.
+
+## JavaScript example
+
+```javascript
+export async function request(path, options = {}) {
+  const token = process.env.TETHER_TOKEN;
+  const response = await fetch(`${process.env.TETHER_BASE_URL}${path}`, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+      ...(options.headers || {}),
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed: ${response.status}`);
+  }
+
+  return response.json();
+}
+```
+
+## Next
+
+- See [Authentication](/guides/authentication) for token acquisition.
+- Use [API reference](/api-reference/introduction) for exact payload schemas.

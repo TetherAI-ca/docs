@@ -1,0 +1,33 @@
+---
+title: "Troubleshooting"
+description: "Common Relay issues and how to diagnose and resolve them."
+---
+
+# Troubleshooting
+
+## `POST /webhook/sendgrid` returns 404
+
+- Verify service is running on expected port.
+- Verify route prefix is `/webhook` and path is `/sendgrid`.
+- Verify reverse proxy forwards multipart requests unchanged.
+
+## Service starts then exits
+
+- Check MongoDB credentials and network access.
+- Confirm `MONGODB_URI` points to reachable host.
+
+## Forwarding to outreach API fails
+
+- Verify `TETHER_API_URL` value.
+- Verify upstream endpoint `/api/webhook/outreach` exists in target API version.
+- Confirm auth/network policy between Relay and upstream API.
+
+## Webchat widget does not connect
+
+- Verify Socket.io script is loaded before widget script.
+- Verify `apiUrl` is correct and reachable from browser.
+- Verify websocket path `/socket/webchat` is exposed.
+
+## API playground requests fail in docs
+
+If you proxy docs through a custom reverse proxy, allow `POST` requests to `/_mintlify/api/request` or configure direct proxy settings in `docs.json`.

@@ -1,0 +1,42 @@
+---
+title: "Contacts"
+description: "Manage contact records, lookup, updates, and deletion."
+---
+
+# Contacts
+
+Use contacts endpoints to create, retrieve, update, and delete lead records.
+
+## Endpoints in this guide
+
+- `GET /api/contacts`
+- `GET /api/contacts/{id}`
+- `POST /api/contact`
+- `PUT /api/contact`
+- `DELETE /api/contacts/{id}`
+- `POST /api/contacts/phoneNumber`
+
+## List contacts
+
+```bash
+curl -G https://your-instance.example.com/api/contacts \
+  -H "Authorization: Bearer <token>" \
+  -d page=1 \
+  -d size=20
+```
+
+## Create a contact
+
+```bash
+curl -X POST https://your-instance.example.com/api/contact \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "phoneNumber": "+15551230000",
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "email": "jane@example.com"
+  }'
+```
+
+Continue with [Conversations](/api-guides/conversations) and [Messages](/api-guides/messages).

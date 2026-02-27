@@ -1,0 +1,31 @@
+---
+title: "Attachments"
+description: "Upload, retrieve, update, and delete attachment resources."
+---
+
+# Attachments
+
+Attachment endpoints are versioned under `/v1`.
+
+## Endpoints in this guide
+
+- `GET /v1/attachments`
+- `POST /v1/attachments`
+- `GET /v1/attachments/{id}`
+- `PUT /v1/attachments/{id}`
+- `DELETE /v1/attachments/{id}`
+
+## Upload attachment
+
+```bash
+curl -X POST https://your-instance.example.com/v1/attachments \
+  -H "Authorization: Bearer <token>" \
+  -F "file=@./contract.pdf"
+```
+
+## Fetch attachment metadata
+
+```bash
+curl https://your-instance.example.com/v1/attachments/Nc6yKKMpcxiiFxp6 \
+  -H "Authorization: Bearer <token>"
+```

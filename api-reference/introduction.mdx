@@ -1,33 +1,27 @@
 ---
-title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+title: "API reference"
+description: "Interactive endpoint reference generated from OpenAPI."
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+# API reference
 
-## Welcome
+This section is generated from `api-reference/openapi.yaml`.
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+## Coverage
 
-<Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
+- Relay webhook service endpoints.
+- Core Tether API endpoints used by current guides.
+- Organization, user, messaging, automation, and AI resources.
 
-## Authentication
+## How to use this section
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+- Use guide pages for workflows and decision-making context.
+- Use endpoint reference pages for exact request/response contracts.
+- Treat OpenAPI as the canonical API contract.
 
-```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
+## Validation workflow
+
+```bash
+mint openapi-check api-reference/openapi.yaml
+mint validate
 ```
