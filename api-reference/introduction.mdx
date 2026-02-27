@@ -8,18 +8,19 @@ This section is generated from `api-reference/openapi.yaml`.
 ## Coverage
 
 - Relay webhook service endpoints.
-- Core Tether API endpoints used by current guides.
+- Core Tether API endpoints defined in `tether-relay` route declarations.
 - Organization, user, messaging, automation, and AI resources.
 
 ## How to use this section
 
 - Use guide pages for workflows and decision-making context.
 - Use endpoint reference pages for exact request/response contracts.
-- Treat OpenAPI as the canonical API contract.
+- Treat OpenAPI as a route-derived contract and validate it against backend code before merge.
 
 ## Validation workflow
 
 ```bash
+node scripts/sync-openapi-from-backend.mjs --check
 mint openapi-check api-reference/openapi.yaml
 mint validate
 ```

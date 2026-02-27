@@ -1,0 +1,44 @@
+---
+title: "API source of truth"
+description: "How endpoint accuracy is enforced between backend code and Mintlify OpenAPI."
+---
+
+The endpoint source of truth is backend route code in `tether-relay`.
+
+## What is guaranteed
+
+These checks run before merge:
+
+```bash
+node scripts/sync-openapi-from-backend.mjs --check
+mint openapi-check api-reference/openapi.yaml
+mint validate
+```
+
+The route-sync check scans:
+
+- `../tether-relay-app/tether-relay/api/src/index.ts`
+- `../tether-relay-app/tether-relay/tools/sendgrid-inbound/src/index.ts`
+- Mounted router files under those entry points
+
+It enforces:
+
+- Every documented path and method in `api-reference/openapi.yaml` is derived from backend route declarations.
+- Path params are normalized from Express syntax (`:id`) to OpenAPI syntax (`{id}`).
+- Auth requirements from global and route-level middleware are reflected in endpoint security metadata.
+
+## What is not guaranteed by route sync alone
+
+- Request body and response field shape correctness.
+- Business logic correctness inside controllers/services.
+- Database and third-party dependency behavior.
+
+For those, you still need runtime API tests.
+
+## Regenerate the contract
+
+When backend routes change, regenerate and commit:
+
+```bash
+node scripts/sync-openapi-from-backend.mjs --write
+```

@@ -1,0 +1,46 @@
+name: Docs Validation
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout docs repository
+        uses: actions/checkout@v4
+
+      - name: Checkout tether-relay source
+        uses: actions/checkout@v4
+        with:
+          repository: TetherAI-ca/tether-relay
+          path: tether-relay
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Mintlify CLI
+        run: npm install -g mint
+
+      - name: Verify OpenAPI sync with backend routes
+        run: node scripts/sync-openapi-from-backend.mjs --backend-root ./tether-relay --check
+
+      - name: Run OpenAPI check
+        run: mint openapi-check api-reference/openapi.yaml
+
+      - name: Check broken links
+        run: mint broken-links
+
+      - name: Validate docs
+        run: mint validate
+
+      - name: Run accessibility checks
+        continue-on-error: true
+        run: mint a11y
