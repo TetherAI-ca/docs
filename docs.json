@@ -3,9 +3,14 @@
   "theme": "mint",
   "name": "Tether Relay Documentation",
   "colors": {
-    "primary": "#0B4F4A",
-    "light": "#14B8A6",
-    "dark": "#0F766E"
+    "primary": "#6B87F0",
+    "light": "#7142FF",
+    "dark": "#64CFE1"
+  },
+  "background": {
+    "color": {
+      "dark": "#0B0B0B"
+    }
   },
   "favicon": "/favicon.svg",
   "logo": {
