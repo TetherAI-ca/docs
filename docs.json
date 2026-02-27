@@ -1,11 +1,11 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Tether Relay Documentation",
+  "name": "Tether.ai",
   "colors": {
-    "primary": "#6B87F0",
-    "light": "#7142FF",
-    "dark": "#64CFE1"
+    "primary": "#6E62F8",
+    "light": "#6E62F8",
+    "dark": "#6E62F8"
   },
   "background": {
     "color": {
@@ -102,21 +102,7 @@
           }
         ]
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Relay app",
-          "href": "https://github.com/tether-ai",
-          "icon": "code"
-        },
-        {
-          "anchor": "Mintlify docs",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        }
-      ]
-    }
+    ]
   },
   "navbar": {
     "links": [
