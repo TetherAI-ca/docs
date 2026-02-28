@@ -1,0 +1,4 @@
+/* Hide Mintlify attribution link in footer. */
+footer a[href*="mintlify.com"] {
+  display: none !important;
+}
