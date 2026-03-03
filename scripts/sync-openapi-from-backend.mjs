@@ -4,10 +4,17 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const projectRoot = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
-const defaultBackendRoot = path.resolve(projectRoot, '../tether-relay-app/tether-relay');
+const backendRootCandidates = [
+  path.resolve(projectRoot, '..'),
+  path.resolve(projectRoot, '../tether-relay-app/tether-relay'),
+];
+const defaultBackendRoot =
+  backendRootCandidates.find((candidate) => fs.existsSync(path.resolve(candidate, 'api/src/index.ts'))) ||
+  backendRootCandidates[0];
 
 const args = process.argv.slice(2);
 const mode = args.includes('--write') ? 'write' : 'check';
+const includeSendgrid = args.includes('--include-sendgrid');
 const backendRootFlagIndex = args.findIndex((arg) => arg === '--backend-root');
 const backendRoot =
   backendRootFlagIndex >= 0 && args[backendRootFlagIndex + 1]
@@ -16,7 +23,12 @@ const backendRoot =
 
 const outputPath = path.resolve(projectRoot, 'api-reference/openapi.yaml');
 const apiEntry = path.resolve(backendRoot, 'api/src/index.ts');
-const sendgridEntry = path.resolve(backendRoot, 'tools/sendgrid-inbound/src/index.ts');
+const sendgridEntryCandidates = [
+  path.resolve(backendRoot, 'services/sendgrid-inbound/src/index.ts'),
+  path.resolve(backendRoot, 'tools/sendgrid-inbound/src/index.ts'),
+];
+const sendgridEntry = sendgridEntryCandidates.find((candidate) => fs.existsSync(candidate));
+const coreContractOpenApiPath = path.resolve(projectRoot, '../core/dist/contracts/contact/openapi.js');
 
 const ROUTE_METHOD_ORDER = ['get', 'post', 'put', 'patch', 'delete', 'options', 'head'];
 const METHOD_ORDER_INDEX = new Map(ROUTE_METHOD_ORDER.map((method, index) => [method, index]));
@@ -40,6 +52,52 @@ const ROUTE_GROUPS = [
 function fail(message) {
   console.error(`Error: ${message}`);
   process.exit(1);
+}
+
+function isPlainObject(value) {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
+function deepMerge(target, source) {
+  if (Array.isArray(source)) return source.slice();
+  if (!isPlainObject(source)) return source;
+  if ('$ref' in source) return { ...source };
+  if ('oneOf' in source || 'anyOf' in source || 'allOf' in source) return { ...source };
+
+  const output = isPlainObject(target) ? { ...target } : {};
+  for (const [key, value] of Object.entries(source)) {
+    const existing = output[key];
+    if (
+      (key === 'requestBody' || ROUTE_METHOD_ORDER.includes(key)) &&
+      isPlainObject(value)
+    ) {
+      output[key] = { ...value };
+      continue;
+    }
+    if (isPlainObject(value) && isPlainObject(existing)) {
+      output[key] = deepMerge(existing, value);
+      continue;
+    }
+    output[key] = deepMerge(existing, value);
+  }
+  return output;
+}
+
+async function loadContractOpenApiOverrides() {
+  if (!fs.existsSync(coreContractOpenApiPath)) {
+    console.warn(
+      `[sync-openapi] Core contract OpenAPI not found at ${coreContractOpenApiPath}. Run: pnpm -C ../core run build`,
+    );
+    return null;
+  }
+
+  try {
+    const module = await import(coreContractOpenApiPath);
+    return module.contactOpenApiContract || null;
+  } catch (error) {
+    console.warn('[sync-openapi] Failed to import core contract OpenAPI overrides:', error);
+    return null;
+  }
 }
 
 function stripComments(content) {
@@ -417,14 +475,16 @@ function collectRoutes() {
     visited,
   });
 
-  walkRoutes({
-    filePath: sendgridEntry,
-    targetVar: 'app',
-    prefix: '',
-    inheritedProtected: false,
-    routeMap,
-    visited,
-  });
+  if (includeSendgrid && sendgridEntry) {
+    walkRoutes({
+      filePath: sendgridEntry,
+      targetVar: 'app',
+      prefix: '',
+      inheritedProtected: false,
+      routeMap,
+      visited,
+    });
+  }
 
   return [...routeMap.values()].sort((a, b) => {
     if (a.pathValue === b.pathValue) {
@@ -482,9 +542,11 @@ function emitYaml(value, indent = 0) {
   return [`${spaces}${formatScalar(value)}`];
 }
 
-function buildOpenApiSpec() {
+async function buildOpenApiSpec() {
   const routes = collectRoutes();
-  const tags = [...new Set(routes.map((route) => detectTag(route.pathValue)))].sort((a, b) => a.localeCompare(b));
+  const tags = [...new Set(routes.map((route) => detectTag(route.pathValue)))].sort((a, b) =>
+    a.localeCompare(b),
+  );
   const paths = {};
 
   for (const route of routes) {
@@ -498,13 +560,13 @@ function buildOpenApiSpec() {
     });
   }
 
-  return {
+  const baseSpec = {
     openapi: '3.1.0',
     info: {
       title: 'Tether Relay and Tether API',
       version: '1.0.0',
       description:
-        'Route-derived OpenAPI contract generated from tether-relay backend sources. Regenerate with scripts/sync-openapi-from-backend.mjs.',
+        `Route-derived OpenAPI contract generated from tether-relay backend sources.${includeSendgrid ? ' Includes SendGrid inbound service routes.' : ''} Regenerate with scripts/sync-openapi-from-backend.mjs.`,
     },
     servers: [
       {
@@ -515,10 +577,14 @@ function buildOpenApiSpec() {
         url: 'http://localhost:2212',
         description: 'Local API service',
       },
-      {
-        url: 'http://localhost:3500',
-        description: 'Local SendGrid inbound service',
-      },
+      ...(includeSendgrid
+        ? [
+            {
+              url: 'http://localhost:3500',
+              description: 'Local SendGrid inbound service',
+            },
+          ]
+        : []),
     ],
     tags: tags.map((tag) => ({ name: tag })),
     paths,
@@ -548,21 +614,30 @@ function buildOpenApiSpec() {
       },
     },
   };
+
+  const overrides = await loadContractOpenApiOverrides();
+  if (!overrides) {
+    return baseSpec;
+  }
+
+  return deepMerge(baseSpec, overrides);
 }
 
-function generateYaml() {
-  const spec = buildOpenApiSpec();
+async function generateYaml() {
+  const spec = await buildOpenApiSpec();
   return `${emitYaml(spec).join('\n')}\n`;
 }
 
 if (!fs.existsSync(apiEntry)) {
   fail(`API entrypoint not found: ${apiEntry}`);
 }
-if (!fs.existsSync(sendgridEntry)) {
-  fail(`SendGrid entrypoint not found: ${sendgridEntry}`);
+if (!sendgridEntry) {
+  fail(
+    `SendGrid entrypoint not found. Checked: ${sendgridEntryCandidates.join(', ')}`,
+  );
 }
 
-const generatedYaml = generateYaml();
+const generatedYaml = await generateYaml();
 const currentYaml = fs.existsSync(outputPath) ? fs.readFileSync(outputPath, 'utf8') : '';
 
 if (mode === 'write') {

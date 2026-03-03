@@ -1,0 +1,14 @@
+{
+  "name": "tether-relay-docs",
+  "private": true,
+  "packageManager": "pnpm@10.17.1",
+  "scripts": {
+    "openapi:write": "pnpm -C ../core run build && node scripts/sync-openapi-from-backend.mjs --write --backend-root ..",
+    "openapi:check": "pnpm -C ../core run build && node scripts/sync-openapi-from-backend.mjs --check --backend-root ..",
+    "openapi:write:all": "pnpm -C ../core run build && node scripts/sync-openapi-from-backend.mjs --write --backend-root .. --include-sendgrid",
+    "openapi:check:all": "pnpm -C ../core run build && node scripts/sync-openapi-from-backend.mjs --check --backend-root .. --include-sendgrid",
+    "verify:contacts": "node scripts/verify-contact-route-coverage.mjs",
+    "validate": "pnpm run openapi:check && npx mint openapi-check api-reference/openapi.yaml",
+    "dev": "pnpm run openapi:write && npx mint dev"
+  }
+}

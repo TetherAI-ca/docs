@@ -4,18 +4,12 @@ info:
   version: "1.0.0"
   description: "Route-derived OpenAPI contract generated from tether-relay backend sources. Regenerate with scripts/sync-openapi-from-backend.mjs."
 servers:
-  - 
-    url: "https://api.staging.tetherai.ca"
-    description: "Staging"
   -
     url: "https://your-instance.example.com"
     description: "Production"
   -
     url: "http://localhost:2212"
     description: "Local API service"
-  -
-    url: "http://localhost:3500"
-    description: "Local SendGrid inbound service"
 tags:
   -
     name: "AI"
@@ -31,6 +25,8 @@ tags:
     name: "Campaigns"
   -
     name: "Contact Metrics"
+  -
+    name: "Contact Notes"
   -
     name: "Contacts"
   -
@@ -62,8 +58,6 @@ tags:
   -
     name: "Prompts"
   -
-    name: "Relay Webhooks"
-  -
     name: "Sms"
   -
     name: "Templates"
@@ -71,6 +65,8 @@ tags:
     name: "Traces"
   -
     name: "Training"
+  -
+    name: "Upload"
   -
     name: "Users"
   -
@@ -1692,19 +1688,6 @@ paths:
       summary: "POST /api/auth/refresh"
       tags:
         - "Auth"
-      requestBody:
-       required: true
-       content:
-        "application/json":
-          schema:
-            type: "object"
-            required:
-              - refreshToken
-            properties:
-              refreshToken:
-                type: "string"
-                description: "The refresh token to exchange for a new access token"
-                example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
       responses:
         "200":
           description: "Successful response"
@@ -1723,13 +1706,20 @@ paths:
           content:
             "application/json":
               schema:
-                "$ref": "#/components/schemas/ApiErrorWithCode"
+                "$ref": "#/components/schemas/ApiError"
         "500":
           description: "Internal server error"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiError"
+      requestBody:
+        required: false
+        content:
+          "application/json":
+            schema:
+              type: "object"
+              additionalProperties: true
   "/api/auth/register":
     post:
       operationId: "post_api_auth_register"
@@ -1799,10 +1789,6 @@ paths:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiError"
-      security:
-          -
-            bearerAuth:
-              []
   "/api/auth/workos/authorize":
     get:
       operationId: "get_api_auth_workos_authorize"
@@ -2144,6 +2130,55 @@ paths:
     patch:
       operationId: "patch_api_automations_id_preference"
       summary: "PATCH /api/automations/{id}/preference"
+      tags:
+        - "Automations"
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiResponse"
+        "400":
+          description: "Bad request"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiError"
+        "401":
+          description: "Unauthorized"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiError"
+        "500":
+          description: "Internal server error"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiError"
+      parameters:
+        -
+          in: "path"
+          name: "id"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        required: false
+        content:
+          "application/json":
+            schema:
+              type: "object"
+              additionalProperties: true
+      security:
+        -
+          bearerAuth:
+            []
+  "/api/automations/{id}/sms-settings":
+    patch:
+      operationId: "patch_api_automations_id_sms_settings"
+      summary: "PATCH /api/automations/{id}/sms-settings"
       tags:
         - "Automations"
       responses:
@@ -3473,87 +3508,73 @@ paths:
             []
   "/api/contact":
     post:
-      operationId: "post_api_contact"
-      summary: "POST /api/contact"
+      operationId: "post_contact"
+      summary: "Create contact"
       tags:
         - "Contacts"
-      responses:
-        "200":
-          description: "Successful response"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiResponse"
-        "400":
-          description: "Bad request"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "500":
-          description: "Internal server error"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-      requestBody:
-        required: false
-        content:
-          "application/json":
-            schema:
-              type: "object"
-              additionalProperties: true
       security:
         -
           bearerAuth:
             []
+      requestBody:
+        required: true
+        content:
+          "application/json":
+            schema:
+              "$ref": "#/components/schemas/AddContactRequest"
+      responses:
+        "200":
+          description: "Contact created"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ContactMutationSuccessEnvelope"
+        "201":
+          description: "Contact created"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ContactMutationSuccessEnvelope"
+        "400":
+          description: "Validation or business error"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiErrorEnvelope"
     put:
-      operationId: "put_api_contact"
-      summary: "PUT /api/contact"
+      operationId: "put_contact"
+      summary: "Update contact"
       tags:
         - "Contacts"
-      responses:
-        "200":
-          description: "Successful response"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiResponse"
-        "400":
-          description: "Bad request"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "500":
-          description: "Internal server error"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-      requestBody:
-        required: false
-        content:
-          "application/json":
-            schema:
-              type: "object"
-              additionalProperties: true
       security:
         -
           bearerAuth:
             []
+      requestBody:
+        required: true
+        content:
+          "application/json":
+            schema:
+              "$ref": "#/components/schemas/UpdateContactRequest"
+      responses:
+        "200":
+          description: "Contact updated"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/LegacyContactMutationResponse"
+        "400":
+          description: "Validation error"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiErrorEnvelope"
+        "404":
+          description: "Contact not found"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiErrorEnvelope"
   "/api/contact-metrics/by-user":
     get:
       operationId: "get_api_contact_metrics_by_user"
@@ -3735,12 +3756,12 @@ paths:
         -
           bearerAuth:
             []
-  "/api/contact/list-generator":
+  "/api/contact-notes":
     get:
-      operationId: "get_api_contact_list_generator"
-      summary: "GET /api/contact/list-generator"
+      operationId: "get_api_contact_notes"
+      summary: "GET /api/contact-notes"
       tags:
-        - "Contacts"
+        - "Contact Notes"
       responses:
         "200":
           description: "Successful response"
@@ -3770,12 +3791,11 @@ paths:
         -
           bearerAuth:
             []
-  "/api/contact/map-excess-data":
     post:
-      operationId: "post_api_contact_map_excess_data"
-      summary: "POST /api/contact/map-excess-data"
+      operationId: "post_api_contact_notes"
+      summary: "POST /api/contact-notes"
       tags:
-        - "Contacts"
+        - "Contact Notes"
       responses:
         "200":
           description: "Successful response"
@@ -3812,171 +3832,12 @@ paths:
         -
           bearerAuth:
             []
-  "/api/contact/message-seen":
-    post:
-      operationId: "post_api_contact_message_seen"
-      summary: "POST /api/contact/message-seen"
-      tags:
-        - "Contacts"
-      responses:
-        "200":
-          description: "Successful response"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiResponse"
-        "400":
-          description: "Bad request"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "500":
-          description: "Internal server error"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-      requestBody:
-        required: false
-        content:
-          "application/json":
-            schema:
-              type: "object"
-              additionalProperties: true
-      security:
-        -
-          bearerAuth:
-            []
-  "/api/contacts":
-    get:
-      operationId: "get_api_contacts"
-      summary: "GET /api/contacts"
-      tags:
-        - "Contacts"
-      responses:
-        "200":
-          description: "Successful response"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiResponse"
-        "400":
-          description: "Bad request"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "500":
-          description: "Internal server error"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-      security:
-        -
-          bearerAuth:
-            []
-    post:
-      operationId: "post_api_contacts"
-      summary: "POST /api/contacts"
-      tags:
-        - "Contacts"
-      responses:
-        "200":
-          description: "Successful response"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiResponse"
-        "400":
-          description: "Bad request"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "500":
-          description: "Internal server error"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-      requestBody:
-        required: false
-        content:
-          "application/json":
-            schema:
-              type: "object"
-              additionalProperties: true
-      security:
-        -
-          bearerAuth:
-            []
-  "/api/contacts/{id}":
-    get:
-      operationId: "get_api_contacts_id"
-      summary: "GET /api/contacts/{id}"
-      tags:
-        - "Contacts"
-      responses:
-        "200":
-          description: "Successful response"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiResponse"
-        "400":
-          description: "Bad request"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "500":
-          description: "Internal server error"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-      parameters:
-        -
-          in: "path"
-          name: "id"
-          required: true
-          schema:
-            type: "string"
-      security:
-        -
-          bearerAuth:
-            []
+  "/api/contact-notes/{noteId}":
     patch:
-      operationId: "patch_api_contacts_id"
-      summary: "PATCH /api/contacts/{id}"
+      operationId: "patch_api_contact_notes_noteId"
+      summary: "PATCH /api/contact-notes/{noteId}"
       tags:
-        - "Contacts"
+        - "Contact Notes"
       responses:
         "200":
           description: "Successful response"
@@ -4005,7 +3866,7 @@ paths:
       parameters:
         -
           in: "path"
-          name: "id"
+          name: "noteId"
           required: true
           schema:
             type: "string"
@@ -4021,10 +3882,10 @@ paths:
           bearerAuth:
             []
     delete:
-      operationId: "delete_api_contacts_id"
-      summary: "DELETE /api/contacts/{id}"
+      operationId: "delete_api_contact_notes_noteId"
+      summary: "DELETE /api/contact-notes/{noteId}"
       tags:
-        - "Contacts"
+        - "Contact Notes"
       responses:
         "200":
           description: "Successful response"
@@ -4053,6 +3914,435 @@ paths:
       parameters:
         -
           in: "path"
+          name: "noteId"
+          required: true
+          schema:
+            type: "string"
+      security:
+        -
+          bearerAuth:
+            []
+  "/api/contact-notes/{noteId}/reaction":
+    post:
+      operationId: "post_api_contact_notes_noteId_reaction"
+      summary: "POST /api/contact-notes/{noteId}/reaction"
+      tags:
+        - "Contact Notes"
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiResponse"
+        "400":
+          description: "Bad request"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiError"
+        "401":
+          description: "Unauthorized"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiError"
+        "500":
+          description: "Internal server error"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiError"
+      parameters:
+        -
+          in: "path"
+          name: "noteId"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        required: false
+        content:
+          "application/json":
+            schema:
+              type: "object"
+              additionalProperties: true
+      security:
+        -
+          bearerAuth:
+            []
+  "/api/contact-notes/download":
+    get:
+      operationId: "get_api_contact_notes_download"
+      summary: "GET /api/contact-notes/download"
+      tags:
+        - "Contact Notes"
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiResponse"
+        "400":
+          description: "Bad request"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiError"
+        "401":
+          description: "Unauthorized"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiError"
+        "500":
+          description: "Internal server error"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiError"
+      security:
+        -
+          bearerAuth:
+            []
+  "/api/contact/list-generator":
+    get:
+      operationId: "get_contact_list_generator"
+      summary: "Get contacts for list generator"
+      tags:
+        - "Contacts"
+      security:
+        -
+          bearerAuth:
+            []
+      parameters:
+        -
+          in: "query"
+          name: "stages"
+          required: false
+          schema:
+            type: "string"
+            description: "JSON array"
+        -
+          in: "query"
+          name: "timeRange"
+          required: false
+          schema:
+            type: "string"
+            description: "JSON object"
+        -
+          in: "query"
+          name: "dateRange"
+          required: false
+          schema:
+            type: "string"
+            description: "JSON object"
+        -
+          in: "query"
+          name: "page"
+          required: false
+          schema:
+            type: "integer"
+            minimum: 1
+            default: 1
+        -
+          in: "query"
+          name: "limit"
+          required: false
+          schema:
+            type: "integer"
+            minimum: 1
+            default: 10
+        -
+          in: "query"
+          name: "searchValue"
+          required: false
+          schema:
+            type: "string"
+        -
+          in: "query"
+          name: "messageStatus"
+          required: false
+          schema:
+            type: "string"
+            enum:
+              - "all"
+              - "answered"
+              - "unanswered"
+        -
+          in: "query"
+          name: "messageCountValue"
+          required: false
+          schema:
+            type: "integer"
+      responses:
+        "200":
+          description: "Contacts returned"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ListGeneratorResponse"
+        "500":
+          description: "Internal server error"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiErrorEnvelope"
+  "/api/contact/map-excess-data":
+    post:
+      operationId: "post_contact_map_excess_data"
+      summary: "Map excess fields for contact payload"
+      tags:
+        - "Contacts"
+      security:
+        -
+          bearerAuth:
+            []
+      requestBody:
+        required: true
+        content:
+          "application/json":
+            schema:
+              "$ref": "#/components/schemas/MapExcessDataRequest"
+      responses:
+        "200":
+          description: "Mapped excess data"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/GenericObjectResponse"
+        "400":
+          description: "Invalid payload"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiErrorEnvelope"
+        "500":
+          description: "Internal server error"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiErrorEnvelope"
+  "/api/contact/message-seen":
+    post:
+      operationId: "post_contact_message_seen"
+      summary: "Mark a conversation as seen"
+      tags:
+        - "Contacts"
+      security:
+        -
+          bearerAuth:
+            []
+      requestBody:
+        required: true
+        content:
+          "application/json":
+            schema:
+              "$ref": "#/components/schemas/MarkMessageSeenRequest"
+      responses:
+        "200":
+          description: "Conversation marked as seen"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/MessageResponse"
+        "404":
+          description: "Conversation not found"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/LegacyErrorResponse"
+        "500":
+          description: "Internal server error"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/LegacyErrorResponse"
+  "/api/contacts":
+    get:
+      operationId: "get_contacts"
+      summary: "List contacts"
+      tags:
+        - "Contacts"
+      parameters:
+        -
+          in: "query"
+          name: "page"
+          required: false
+          schema:
+            type: "integer"
+            minimum: 1
+            default: 1
+        -
+          in: "query"
+          name: "size"
+          required: false
+          schema:
+            type: "integer"
+            minimum: 1
+            default: 50
+        -
+          in: "query"
+          name: "search"
+          required: false
+          schema:
+            type: "string"
+            default: ""
+        -
+          in: "query"
+          name: "source"
+          required: false
+          schema:
+            type: "string"
+        -
+          in: "query"
+          name: "leadSource"
+          required: false
+          schema:
+            type: "string"
+        -
+          in: "query"
+          name: "ownerFilter"
+          required: false
+          schema:
+            type: "string"
+            default: "my"
+        -
+          in: "query"
+          name: "status"
+          required: false
+          schema:
+            type: "string"
+        -
+          in: "query"
+          name: "pipelineStage"
+          required: false
+          schema:
+            type: "string"
+        -
+          in: "query"
+          name: "pipelineId"
+          required: false
+          schema:
+            type: "string"
+        -
+          in: "query"
+          name: "dateRange"
+          required: false
+          schema:
+            type: "string"
+            description: "JSON string range"
+        -
+          in: "query"
+          name: "owner"
+          required: false
+          schema:
+            oneOf:
+              -
+                type: "string"
+              -
+                type: "array"
+                items:
+                  type: "string"
+        -
+          in: "query"
+          name: "assignee"
+          required: false
+          schema:
+            oneOf:
+              -
+                type: "string"
+              -
+                type: "array"
+                items:
+                  type: "string"
+        -
+          in: "query"
+          name: "messageStatus"
+          required: false
+          schema:
+            type: "string"
+        -
+          in: "query"
+          name: "lastMessageTimeRange"
+          required: false
+          schema:
+            type: "string"
+            description: "JSON string range"
+        -
+          in: "query"
+          name: "lastMessageDateRange"
+          required: false
+          schema:
+            type: "string"
+            description: "JSON string range"
+      security:
+        -
+          bearerAuth:
+            []
+      responses:
+        "200":
+          description: "Contacts returned"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/GetContactsSuccessEnvelope"
+        "400":
+          description: "Validation error"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiErrorEnvelope"
+        "500":
+          description: "Internal server error"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiErrorEnvelope"
+    post:
+      operationId: "post_contacts"
+      summary: "List contacts by pipeline status buckets"
+      tags:
+        - "Contacts"
+      security:
+        -
+          bearerAuth:
+            []
+      requestBody:
+        required: true
+        content:
+          "application/json":
+            schema:
+              "$ref": "#/components/schemas/GetContactsPerStatusRequest"
+      responses:
+        "200":
+          description: "Contacts grouped by status"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ContactsByStageResponse"
+        "404":
+          description: "Pipeline not found"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/LegacyErrorResponse"
+        "500":
+          description: "Internal server error"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/LegacyErrorResponse"
+  "/api/contacts/{id}":
+    get:
+      operationId: "get_contact_by_id"
+      summary: "Get contact by id"
+      tags:
+        - "Contacts"
+      parameters:
+        -
+          in: "path"
           name: "id"
           required: true
           schema:
@@ -4061,37 +4351,95 @@ paths:
         -
           bearerAuth:
             []
+      responses:
+        "200":
+          description: "Contact returned"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/GetContactByIdSuccessEnvelope"
+        "404":
+          description: "Contact not found"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiErrorEnvelope"
+    patch:
+      operationId: "patch_contact_field"
+      summary: "Patch contact fields"
+      tags:
+        - "Contacts"
+      parameters:
+        -
+          in: "path"
+          name: "id"
+          required: true
+          schema:
+            type: "string"
+      security:
+        -
+          bearerAuth:
+            []
+      requestBody:
+        required: true
+        content:
+          "application/json":
+            schema:
+              "$ref": "#/components/schemas/PatchContactRequest"
+      responses:
+        "200":
+          description: "Contact updated"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ContactMutationSuccessEnvelope"
+        "400":
+          description: "Validation error"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiErrorEnvelope"
+        "404":
+          description: "Contact not found"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiErrorEnvelope"
+    delete:
+      operationId: "delete_contact_by_id"
+      summary: "Delete contact by id"
+      tags:
+        - "Contacts"
+      parameters:
+        -
+          in: "path"
+          name: "id"
+          required: true
+          schema:
+            type: "string"
+      security:
+        -
+          bearerAuth:
+            []
+      responses:
+        "200":
+          description: "Contact deleted"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/MessageResponse"
+        "404":
+          description: "Contact not found"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/LegacyErrorResponse"
   "/api/contacts/{id}/block":
     patch:
-      operationId: "patch_api_contacts_id_block"
-      summary: "PATCH /api/contacts/{id}/block"
+      operationId: "patch_contact_block"
+      summary: "Block contact"
       tags:
         - "Contacts"
-      responses:
-        "200":
-          description: "Successful response"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiResponse"
-        "400":
-          description: "Bad request"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "500":
-          description: "Internal server error"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
       parameters:
         -
           in: "path"
@@ -4099,48 +4447,29 @@ paths:
           required: true
           schema:
             type: "string"
-      requestBody:
-        required: false
-        content:
-          "application/json":
-            schema:
-              type: "object"
-              additionalProperties: true
       security:
         -
           bearerAuth:
             []
+      responses:
+        "200":
+          description: "Contact blocked"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/BlockUnblockResponse"
+        "404":
+          description: "Contact not found"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/LegacyErrorResponse"
   "/api/contacts/{id}/execute-custom-fields":
     post:
-      operationId: "post_api_contacts_id_execute_custom_fields"
-      summary: "POST /api/contacts/{id}/execute-custom-fields"
+      operationId: "post_contact_execute_custom_fields"
+      summary: "Execute contact custom fields"
       tags:
         - "Contacts"
-      responses:
-        "200":
-          description: "Successful response"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiResponse"
-        "400":
-          description: "Bad request"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "500":
-          description: "Internal server error"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
       parameters:
         -
           in: "path"
@@ -4148,48 +4477,35 @@ paths:
           required: true
           schema:
             type: "string"
-      requestBody:
-        required: false
-        content:
-          "application/json":
-            schema:
-              type: "object"
-              additionalProperties: true
       security:
         -
           bearerAuth:
             []
+      responses:
+        "200":
+          description: "Custom fields executed"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/GenericObjectResponse"
+        "400":
+          description: "Invalid request"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/LegacyErrorResponse"
+        "500":
+          description: "Execution failed"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/LegacyErrorResponse"
   "/api/contacts/{id}/execute-custom-fields/all":
     post:
-      operationId: "post_api_contacts_id_execute_custom_fields_all"
-      summary: "POST /api/contacts/{id}/execute-custom-fields/all"
+      operationId: "post_contact_execute_custom_fields_all"
+      summary: "Execute custom fields across contact, conversations and applications"
       tags:
         - "Contacts"
-      responses:
-        "200":
-          description: "Successful response"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiResponse"
-        "400":
-          description: "Bad request"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "500":
-          description: "Internal server error"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
       parameters:
         -
           in: "path"
@@ -4197,48 +4513,35 @@ paths:
           required: true
           schema:
             type: "string"
-      requestBody:
-        required: false
-        content:
-          "application/json":
-            schema:
-              type: "object"
-              additionalProperties: true
       security:
         -
           bearerAuth:
             []
+      responses:
+        "200":
+          description: "Custom fields executed"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ExecuteAllCustomFieldsResponse"
+        "400":
+          description: "Invalid request"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/LegacyErrorResponse"
+        "500":
+          description: "Execution failed"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/LegacyErrorResponse"
   "/api/contacts/{id}/unblock":
     patch:
-      operationId: "patch_api_contacts_id_unblock"
-      summary: "PATCH /api/contacts/{id}/unblock"
+      operationId: "patch_contact_unblock"
+      summary: "Unblock contact"
       tags:
         - "Contacts"
-      responses:
-        "200":
-          description: "Successful response"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiResponse"
-        "400":
-          description: "Bad request"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "500":
-          description: "Internal server error"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
       parameters:
         -
           in: "path"
@@ -4246,262 +4549,295 @@ paths:
           required: true
           schema:
             type: "string"
-      requestBody:
-        required: false
-        content:
-          "application/json":
-            schema:
-              type: "object"
-              additionalProperties: true
       security:
         -
           bearerAuth:
             []
+      responses:
+        "200":
+          description: "Contact unblocked"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/BlockUnblockResponse"
+        "404":
+          description: "Contact not found"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/LegacyErrorResponse"
   "/api/contacts/active":
     post:
-      operationId: "post_api_contacts_active"
-      summary: "POST /api/contacts/active"
+      operationId: "post_contacts_active"
+      summary: "List active contacts for user context"
       tags:
         - "Contacts"
-      responses:
-        "200":
-          description: "Successful response"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiResponse"
-        "400":
-          description: "Bad request"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "500":
-          description: "Internal server error"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
+      security:
+        -
+          bearerAuth:
+            []
       requestBody:
         required: false
         content:
           "application/json":
             schema:
-              type: "object"
-              additionalProperties: true
+              "$ref": "#/components/schemas/GetContactsWithConversationsRequest"
+      responses:
+        "200":
+          description: "Active contacts returned"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ContactsArrayResponse"
+        "500":
+          description: "Internal server error"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/LegacyErrorResponse"
+  "/api/contacts/bulk-delete":
+    delete:
+      operationId: "delete_contacts_bulk"
+      summary: "Bulk delete contacts"
+      tags:
+        - "Contacts"
       security:
         -
           bearerAuth:
             []
+      requestBody:
+        required: true
+        content:
+          "application/json":
+            schema:
+              "$ref": "#/components/schemas/BulkDeleteContactsRequest"
+      responses:
+        "200":
+          description: "Bulk delete completed"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/BulkDeleteResponse"
+        "400":
+          description: "Validation error"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/LegacyErrorResponse"
+        "404":
+          description: "No contacts found"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/LegacyErrorResponse"
+        "500":
+          description: "Internal server error"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/LegacyErrorResponse"
+  "/api/contacts/bulk-update-status":
+    put:
+      operationId: "put_contacts_bulk_update_status"
+      summary: "Bulk update contact status"
+      tags:
+        - "Contacts"
+      security:
+        -
+          bearerAuth:
+            []
+      requestBody:
+        required: true
+        content:
+          "application/json":
+            schema:
+              "$ref": "#/components/schemas/BulkUpdateContactStatusRequest"
+      responses:
+        "200":
+          description: "Bulk update completed"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/BulkUpdateStatusResponse"
+        "400":
+          description: "Validation error"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/LegacyErrorResponse"
+        "500":
+          description: "Internal server error"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/LegacyErrorResponse"
   "/api/contacts/counts":
     post:
-      operationId: "post_api_contacts_counts"
-      summary: "POST /api/contacts/counts"
+      operationId: "post_contacts_counts"
+      summary: "Get contact counts for filters"
       tags:
         - "Contacts"
-      responses:
-        "200":
-          description: "Successful response"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiResponse"
-        "400":
-          description: "Bad request"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "500":
-          description: "Internal server error"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
+      security:
+        -
+          bearerAuth:
+            []
       requestBody:
         required: false
         content:
           "application/json":
             schema:
-              type: "object"
-              additionalProperties: true
-      security:
-        -
-          bearerAuth:
-            []
+              "$ref": "#/components/schemas/GetContactCountsRequest"
+      responses:
+        "200":
+          description: "Counts returned"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ContactCountsResponse"
+        "500":
+          description: "Internal server error"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/LegacyErrorResponse"
   "/api/contacts/inactive":
     get:
-      operationId: "get_api_contacts_inactive"
-      summary: "GET /api/contacts/inactive"
+      operationId: "get_contacts_inactive"
+      summary: "Get inactive contacts phone/email list"
       tags:
         - "Contacts"
+      security:
+        -
+          bearerAuth:
+            []
+      parameters:
+        -
+          in: "query"
+          name: "channelType"
+          required: false
+          schema:
+            type: "string"
+            enum:
+              - "sms"
+              - "email"
       responses:
         "200":
-          description: "Successful response"
+          description: "Inactive contacts returned"
           content:
             "application/json":
               schema:
-                "$ref": "#/components/schemas/ApiResponse"
-        "400":
-          description: "Bad request"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
+                "$ref": "#/components/schemas/ContactsArrayResponse"
         "500":
           description: "Internal server error"
           content:
             "application/json":
               schema:
-                "$ref": "#/components/schemas/ApiError"
-      security:
-        -
-          bearerAuth:
-            []
+                "$ref": "#/components/schemas/LegacyErrorResponse"
   "/api/contacts/phoneNumber":
     post:
-      operationId: "post_api_contacts_phoneNumber"
-      summary: "POST /api/contacts/phoneNumber"
+      operationId: "post_contacts_by_phone"
+      summary: "Get contact by phone number"
       tags:
         - "Contacts"
-      responses:
-        "200":
-          description: "Successful response"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiResponse"
-        "400":
-          description: "Bad request"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "500":
-          description: "Internal server error"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-      requestBody:
-        required: false
-        content:
-          "application/json":
-            schema:
-              type: "object"
-              additionalProperties: true
       security:
         -
           bearerAuth:
             []
+      requestBody:
+        required: true
+        content:
+          "application/json":
+            schema:
+              "$ref": "#/components/schemas/GetContactByPhoneRequest"
+      responses:
+        "200":
+          description: "Contact returned"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ContactByPhoneResponse"
+        "400":
+          description: "Invalid context"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/LegacyErrorResponse"
+        "404":
+          description: "Contact not found"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/LegacyErrorResponse"
   "/api/contacts/status":
     post:
-      operationId: "post_api_contacts_status"
-      summary: "POST /api/contacts/status"
+      operationId: "post_contacts_status"
+      summary: "Get contacts for one status"
       tags:
         - "Contacts"
+      security:
+        -
+          bearerAuth:
+            []
+      requestBody:
+        required: true
+        content:
+          "application/json":
+            schema:
+              "$ref": "#/components/schemas/GetContactsByStatusRequest"
       responses:
         "200":
-          description: "Successful response"
+          description: "Contacts returned"
           content:
             "application/json":
               schema:
-                "$ref": "#/components/schemas/ApiResponse"
-        "400":
-          description: "Bad request"
+                "$ref": "#/components/schemas/ContactsByStatusResponse"
+        "404":
+          description: "Status not found"
           content:
             "application/json":
               schema:
-                "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
+                "$ref": "#/components/schemas/LegacyErrorResponse"
         "500":
           description: "Internal server error"
           content:
             "application/json":
               schema:
-                "$ref": "#/components/schemas/ApiError"
-      requestBody:
-        required: false
-        content:
-          "application/json":
-            schema:
-              type: "object"
-              additionalProperties: true
-      security:
-        -
-          bearerAuth:
-            []
+                "$ref": "#/components/schemas/LegacyErrorResponse"
   "/api/contacts/statuses":
     post:
-      operationId: "post_api_contacts_statuses"
-      summary: "POST /api/contacts/statuses"
+      operationId: "post_contacts_statuses"
+      summary: "Get contacts across all statuses"
       tags:
         - "Contacts"
-      responses:
-        "200":
-          description: "Successful response"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiResponse"
-        "400":
-          description: "Bad request"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "500":
-          description: "Internal server error"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-      requestBody:
-        required: false
-        content:
-          "application/json":
-            schema:
-              type: "object"
-              additionalProperties: true
       security:
         -
           bearerAuth:
             []
+      requestBody:
+        required: true
+        content:
+          "application/json":
+            schema:
+              "$ref": "#/components/schemas/GetAllInitialContactsByStatusRequest"
+      responses:
+        "200":
+          description: "Contacts grouped by statuses"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ContactsByStageResponse"
+        "400":
+          description: "Invalid pipeline id"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/LegacyErrorResponse"
+        "404":
+          description: "Organization not found"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/LegacyErrorResponse"
   "/api/conversation":
     delete:
       operationId: "delete_api_conversation"
@@ -6453,6 +6789,41 @@ paths:
     get:
       operationId: "get_api_marketplace_acquired"
       summary: "GET /api/marketplace/acquired"
+      tags:
+        - "Marketplace"
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiResponse"
+        "400":
+          description: "Bad request"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiError"
+        "401":
+          description: "Unauthorized"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiError"
+        "500":
+          description: "Internal server error"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiError"
+      security:
+        -
+          bearerAuth:
+            []
+  "/api/marketplace/automations/sms-status":
+    get:
+      operationId: "get_api_marketplace_automations_sms_status"
+      summary: "GET /api/marketplace/automations/sms-status"
       tags:
         - "Marketplace"
       responses:
@@ -9241,6 +9612,48 @@ paths:
         -
           bearerAuth:
             []
+  "/api/upload":
+    post:
+      operationId: "post_api_upload"
+      summary: "POST /api/upload"
+      tags:
+        - "Upload"
+      responses:
+        "200":
+          description: "Successful response"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiResponse"
+        "400":
+          description: "Bad request"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiError"
+        "401":
+          description: "Unauthorized"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiError"
+        "500":
+          description: "Internal server error"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiError"
+      requestBody:
+        required: false
+        content:
+          "application/json":
+            schema:
+              type: "object"
+              additionalProperties: true
+      security:
+        -
+          bearerAuth:
+            []
   "/api/user/{id}":
     put:
       operationId: "put_api_user_id"
@@ -11912,44 +12325,6 @@ paths:
         -
           bearerAuth:
             []
-  "/webhook/sendgrid":
-    post:
-      operationId: "post_webhook_sendgrid"
-      summary: "POST /webhook/sendgrid"
-      tags:
-        - "Relay Webhooks"
-      responses:
-        "200":
-          description: "Successful response"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiResponse"
-        "400":
-          description: "Bad request"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "500":
-          description: "Internal server error"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-      requestBody:
-        required: false
-        content:
-          "application/json":
-            schema:
-              type: "object"
-              additionalProperties: true
 components:
   securitySchemes:
     bearerAuth:
@@ -11965,17 +12340,614 @@ components:
       type: "object"
       additionalProperties: true
       properties:
-        error:
-          type: "string"
-        # code:
-        #   type: "string"
-      description: "Generic error envelope. Endpoint-specific fields are intentionally open."
-    ApiErrorWithCode:
-      type: "object"
-      additionalProperties: true
-      properties:
-        error:
+        message:
           type: "string"
         code:
           type: "string"
       description: "Generic error envelope. Endpoint-specific fields are intentionally open."
+    ContactDto:
+      type: "object"
+      properties:
+        _id:
+          type: "string"
+        firstName:
+          type:
+            - "string"
+            - "null"
+        lastName:
+          type:
+            - "string"
+            - "null"
+        phoneNumber:
+          type:
+            - "string"
+            - "null"
+        email:
+          type:
+            - "string"
+            - "null"
+        status:
+          type:
+            - "string"
+            - "null"
+        pipelineId:
+          type:
+            - "string"
+            - "null"
+        pipelineStage:
+          type:
+            - "string"
+            - "null"
+        organizationId:
+          type:
+            - "string"
+            - "null"
+        userId:
+          type:
+            - "string"
+            - "null"
+        createdBy:
+          type:
+            - "string"
+            - "null"
+        assignees:
+          type: "array"
+          items:
+            {}
+        createdAt:
+          type:
+            - "string"
+            - "null"
+          format: "date-time"
+        updatedAt:
+          type:
+            - "string"
+            - "null"
+          format: "date-time"
+      additionalProperties: true
+    ApiErrorEnvelope:
+      type: "object"
+      properties:
+        success:
+          type: "boolean"
+          const: false
+        message:
+          type: "string"
+        error:
+          type: "object"
+          properties:
+            code:
+              type: "string"
+            message:
+              type: "string"
+            details:
+              {}
+          required:
+            - "message"
+          additionalProperties: true
+      required:
+        - "success"
+        - "error"
+      additionalProperties: true
+    LegacyErrorResponse:
+      type: "object"
+      properties:
+        error:
+          type: "string"
+        message:
+          type: "string"
+        data:
+          {}
+      additionalProperties: true
+    MessageResponse:
+      type: "object"
+      properties:
+        message:
+          type: "string"
+        data:
+          {}
+      additionalProperties: true
+    GenericObjectResponse:
+      type: "object"
+      additionalProperties: true
+    AddContactRequest:
+      type: "object"
+      properties:
+        firstName:
+          type: "string"
+        lastName:
+          type: "string"
+        phoneNumber:
+          type: "string"
+        email:
+          type: "string"
+          format: "email"
+        process:
+          type: "string"
+        status:
+          type: "string"
+        pipelineStage:
+          type: "string"
+        pipelineId:
+          type: "string"
+      required:
+        - "phoneNumber"
+      additionalProperties: true
+    UpdateContactRequest:
+      type: "object"
+      properties:
+        _id:
+          type: "string"
+        fromHistoryModal:
+          type: "boolean"
+        status:
+          type: "string"
+        pipelineStage:
+          type:
+            - "string"
+            - "null"
+        pipelineId:
+          type: "string"
+      required:
+        - "_id"
+      additionalProperties: true
+    PatchContactRequest:
+      type: "object"
+      properties:
+        status:
+          type: "string"
+        pipelineStage:
+          type:
+            - "string"
+            - "null"
+        pipelineId:
+          type: "string"
+      additionalProperties: true
+    MarkMessageSeenRequest:
+      type: "object"
+      properties:
+        conversationId:
+          type: "string"
+      required:
+        - "conversationId"
+      additionalProperties: false
+    MapExcessDataRequest:
+      type: "object"
+      properties:
+        sourceText:
+          type: "string"
+        existingSchema:
+          type: "object"
+          additionalProperties: true
+        mappedData:
+          type: "object"
+          additionalProperties: true
+        excessData:
+          type: "object"
+          additionalProperties: true
+      additionalProperties: true
+    GetContactsPerStatusRequest:
+      type: "object"
+      properties:
+        page:
+          type: "object"
+          additionalProperties:
+            type: "integer"
+        size:
+          type: "integer"
+        search:
+          type: "string"
+        source:
+          type: "string"
+        ownerFilter:
+          type: "string"
+        owner:
+          type: "array"
+          items:
+            type: "string"
+        assignee:
+          type: "array"
+          items:
+            type: "string"
+        pipelineType:
+          type: "string"
+          enum:
+            - "Contact"
+            - "Application"
+        pipelineId:
+          type: "string"
+        status:
+          type: "string"
+        dateRange:
+          type: "object"
+          additionalProperties: true
+        createdDateRange:
+          type: "object"
+          additionalProperties: true
+        customFilters:
+          type: "object"
+          additionalProperties: true
+        stages:
+          type: "array"
+          items:
+            type: "string"
+        stageIdByName:
+          type: "object"
+          additionalProperties:
+            type: "string"
+        bulkOnly:
+          type: "boolean"
+        messageStatus:
+          type: "string"
+        lastMessageTimeRange:
+          type: "object"
+          additionalProperties: true
+        lastMessageDateRange:
+          type: "object"
+          additionalProperties: true
+      additionalProperties: true
+    GetContactsWithConversationsRequest:
+      type: "object"
+      properties:
+        channelType:
+          type: "string"
+        ownerFilter:
+          type: "string"
+      additionalProperties: true
+    GetContactCountsRequest:
+      type: "object"
+      properties:
+        search:
+          type: "string"
+        source:
+          type: "string"
+      additionalProperties: true
+    GetContactByPhoneRequest:
+      type: "object"
+      properties:
+        phoneNumber:
+          type: "string"
+        targetUserId:
+          type: "string"
+      required:
+        - "phoneNumber"
+      additionalProperties: false
+    GetContactsByStatusRequest:
+      type: "object"
+      properties:
+        status:
+          type: "string"
+        pipelineId:
+          type: "string"
+        page:
+          type: "integer"
+        size:
+          type: "integer"
+        search:
+          type: "string"
+        showUnreadOnly:
+          type: "boolean"
+        ownerFilter:
+          type: "string"
+        bulkOnly:
+          type: "boolean"
+        showUnresolvedOnly:
+          type: "boolean"
+      required:
+        - "status"
+      additionalProperties: true
+    GetAllInitialContactsByStatusRequest:
+      type: "object"
+      properties:
+        size:
+          type: "integer"
+        search:
+          type: "string"
+        pages:
+          type: "object"
+          additionalProperties:
+            type: "integer"
+        pipelineId:
+          type: "string"
+        showUnreadOnly:
+          type: "boolean"
+        channelType:
+          type: "string"
+        source:
+          type: "string"
+        ownerFilter:
+          type: "string"
+        bulkOnly:
+          type: "boolean"
+        showUnresolvedOnly:
+          type: "boolean"
+      additionalProperties: true
+    BulkUpdateContactStatusRequest:
+      type: "object"
+      properties:
+        contactIds:
+          type: "array"
+          items:
+            type: "string"
+        status:
+          type: "string"
+        pipelineStageId:
+          type: "string"
+      required:
+        - "contactIds"
+        - "status"
+        - "pipelineStageId"
+      additionalProperties: false
+    BulkDeleteContactsRequest:
+      type: "object"
+      properties:
+        contactIds:
+          type: "array"
+          items:
+            type: "string"
+      required:
+        - "contactIds"
+      additionalProperties: false
+    GetContactsSuccessEnvelope:
+      type: "object"
+      properties:
+        success:
+          type: "boolean"
+          const: true
+        data:
+          type: "object"
+          properties:
+            contacts:
+              type: "array"
+              items:
+                "$ref": "#/components/schemas/ContactDto"
+            total:
+              type: "integer"
+            page:
+              type: "integer"
+            size:
+              type: "integer"
+          required:
+            - "contacts"
+            - "total"
+            - "page"
+            - "size"
+          additionalProperties: true
+        meta:
+          type: "object"
+          additionalProperties: true
+        contacts:
+          type: "array"
+          items:
+            "$ref": "#/components/schemas/ContactDto"
+        total:
+          type: "integer"
+      required:
+        - "success"
+        - "data"
+      additionalProperties: true
+    GetContactByIdSuccessEnvelope:
+      type: "object"
+      properties:
+        success:
+          type: "boolean"
+          const: true
+        data:
+          "$ref": "#/components/schemas/ContactDto"
+      required:
+        - "success"
+        - "data"
+      additionalProperties: true
+    ContactMutationSuccessEnvelope:
+      type: "object"
+      properties:
+        success:
+          type: "boolean"
+          const: true
+        data:
+          type: "object"
+          properties:
+            contact:
+              "$ref": "#/components/schemas/ContactDto"
+            message:
+              type: "string"
+          required:
+            - "contact"
+          additionalProperties: true
+        message:
+          type: "string"
+        contact:
+          "$ref": "#/components/schemas/ContactDto"
+      required:
+        - "success"
+        - "data"
+      additionalProperties: true
+    LegacyContactMutationResponse:
+      type: "object"
+      properties:
+        message:
+          type: "string"
+        contact:
+          "$ref": "#/components/schemas/ContactDto"
+        data:
+          {}
+        success:
+          type: "boolean"
+      additionalProperties: true
+    ContactsArrayResponse:
+      type: "object"
+      properties:
+        data:
+          type: "array"
+          items:
+            "$ref": "#/components/schemas/ContactDto"
+        total:
+          type: "integer"
+        status:
+          type: "string"
+        stageIdByName:
+          type: "object"
+          additionalProperties:
+            type: "string"
+        stageNameById:
+          type: "object"
+          additionalProperties:
+            type: "string"
+      additionalProperties: true
+    ContactsByStageResponse:
+      type: "object"
+      properties:
+        data:
+          type: "object"
+          additionalProperties:
+            type: "object"
+            properties:
+              contacts:
+                type: "array"
+                items:
+                  "$ref": "#/components/schemas/ContactDto"
+              total:
+                type: "integer"
+            additionalProperties: true
+        dataByStatus:
+          type: "object"
+          additionalProperties: true
+        stageIdByName:
+          type: "object"
+          additionalProperties:
+            type: "string"
+        stageNameById:
+          type: "object"
+          additionalProperties:
+            type: "string"
+      additionalProperties: true
+    ContactsByStatusResponse:
+      type: "object"
+      properties:
+        data:
+          type: "array"
+          items:
+            "$ref": "#/components/schemas/ContactDto"
+        total:
+          type: "integer"
+        status:
+          type: "string"
+        pipelineStage:
+          type: "string"
+        stageIdByName:
+          type: "object"
+          additionalProperties:
+            type: "string"
+        stageNameById:
+          type: "object"
+          additionalProperties:
+            type: "string"
+      additionalProperties: true
+    ListGeneratorContact:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+        name:
+          type: "string"
+        phoneNumber:
+          type: "string"
+        email:
+          type: "string"
+        status:
+          type: "string"
+        pipelineStage:
+          type: "string"
+        lastMessageDate:
+          type:
+            - "string"
+            - "null"
+          format: "date-time"
+        messageCount:
+          type: "integer"
+      additionalProperties: true
+    ListGeneratorResponse:
+      type: "object"
+      properties:
+        contacts:
+          type: "array"
+          items:
+            "$ref": "#/components/schemas/ListGeneratorContact"
+        total:
+          type: "integer"
+        page:
+          type: "integer"
+        limit:
+          type: "integer"
+        totalPages:
+          type: "integer"
+      additionalProperties: true
+    ContactCountsResponse:
+      type: "object"
+      additionalProperties:
+        type: "integer"
+    ContactByPhoneResponse:
+      type: "object"
+      properties:
+        data:
+          "$ref": "#/components/schemas/ContactDto"
+        message:
+          type: "string"
+        error:
+          type: "string"
+      additionalProperties: true
+    BlockUnblockResponse:
+      type: "object"
+      properties:
+        message:
+          type: "string"
+        data:
+          type: "object"
+          properties:
+            contact:
+              "$ref": "#/components/schemas/ContactDto"
+            syncedDeviceIds:
+              type: "array"
+              items:
+                type: "string"
+            removedDeviceIds:
+              type: "array"
+              items:
+                type: "string"
+          additionalProperties: true
+      additionalProperties: true
+    BulkUpdateStatusResponse:
+      type: "object"
+      properties:
+        message:
+          type: "string"
+        modifiedCount:
+          type: "integer"
+        matchedCount:
+          type: "integer"
+      additionalProperties: true
+    BulkDeleteResponse:
+      type: "object"
+      properties:
+        message:
+          type: "string"
+        deletedCount:
+          type: "integer"
+      additionalProperties: true
+    ExecuteAllCustomFieldsResponse:
+      type: "object"
+      properties:
+        contact:
+          type: "object"
+          additionalProperties: true
+        conversations:
+          type: "array"
+          items:
+            type: "object"
+            additionalProperties: true
+        applications:
+          type: "array"
+          items:
+            type: "object"
+            additionalProperties: true
+      additionalProperties: true
