@@ -30,26 +30,6 @@
               "guides/authentication",
               "guides/architecture"
             ]
-          },
-          {
-            "group": "Relay platform (internal)",
-            "pages": [
-              "relay/overview",
-              "relay/setup",
-              "relay/environment",
-              "relay/webchat-widget",
-              "relay/sendgrid-inbound"
-            ]
-          },
-          {
-            "group": "Operations",
-            "pages": [
-              "relay/operations",
-              "relay/troubleshooting",
-              "operations/launch-checklist",
-              "operations/redirects",
-              "operations/maintenance-model"
-            ]
           }
         ]
       },

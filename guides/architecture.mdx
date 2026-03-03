@@ -1,30 +1,30 @@
 ---
 title: "Architecture"
-description: "Understand Tether Relay system components and request flow."
+description: "Understand API integration surfaces and request flow."
 ---
 
-Tether Relay combines API services, inbound processing services, and client surfaces.
+Tether provides multiple API integration surfaces for messaging and workflow automation.
 
-## Core components
+## Core API surfaces
 
-- Relay frontend (`client`): React application for operations and configuration.
-- SendGrid inbound service (`tools/sendgrid-inbound`): receives multipart email webhook payloads.
-- Upstream Tether API (`/api/*`): source of truth for business entities and workflow actions.
-- Webchat runtime (`client/public/webchat-widget.js`): embeddable chat widget with Socket.io.
+- Authentication endpoints (`/api/auth/*`) for token lifecycle.
+- Resource endpoints (`/api/contacts`, `/api/conversation`, `/api/messages`, `/api/applications`) for core workflow operations.
+- Organization and user endpoints (`/api/organizations`, `/api/user`) for account-level configuration.
+- Automation endpoints (`/api/automations`, `/api/workflows`, `/api/pipelines`) for orchestration.
 
-## Inbound email flow
+## Example inbound integration flow
 
-1. SendGrid posts multipart payload to `POST /webhook/sendgrid`.
-2. Relay parses sender, recipient, message body, and attachments.
-3. Relay extracts routing configuration from inbound address.
-4. Relay forwards normalized payload to `/api/webhook/outreach` on upstream API.
-5. Upstream API applies business logic and persists conversation/contact events.
+1. Source system sends inbound event payload to `POST /api/webhook/outreach`.
+2. API validates and normalizes payload fields.
+3. Event is mapped to contact/application/conversation context.
+4. Automation and assignment logic is applied.
+5. Resulting state is available through resource endpoints.
 
-## Realtime webchat flow
+## Realtime messaging flow
 
-1. Embedded widget initializes with `webchatConfigId` and `apiUrl`.
-2. Widget establishes Socket.io connection on `/socket/webchat`.
-3. Messages stream bidirectionally through socket events.
-4. Widget tracks connection status, typing signals, and CSAT prompts.
+1. Client authenticates and obtains bearer token.
+2. Client sends/receives message events through API and realtime channels.
+3. Conversation state updates are persisted and queryable by API.
+4. Feedback loops (for example CSAT) are exposed via conversation endpoints.
 
-See [Webchat widget](/relay/webchat-widget) and [SendGrid inbound](/relay/sendgrid-inbound) for implementation details.
+Use [Quickstart](/quickstart), [API guides](/api-guides/contacts), and [API reference](/api-reference/introduction) for implementation details.
