@@ -5035,6 +5035,19 @@ paths:
       summary: "POST /api/conversation/unseen"
       tags:
         - "Conversations"
+      requestBody:
+        required: true
+        content:
+          "application/json":
+            schema:
+              type: "object"
+              required:
+                - conversationId
+              properties:
+                conversationId:
+                  type: "string"
+                  description: "The ID of the conversation to mark as unseen"
+                  example: "507f1f77bcf86cd799439011"
       responses:
         "200":
           description: "Successful response"
