@@ -4959,18 +4959,18 @@ paths:
           schema:
             type: "string"
       requestBody:
-        required: true
-        content:
-          "application/json":
-            schema:
-              type: "object"
-              required:
-                - isResolved
-              properties:
-                isResolved:
-                  type: "boolean"
-                  description: "true to resolve the conversation, false to unresolve it"
-                  example: true
+      required: true
+      content:
+        "application/json":
+          schema:
+            type: "object"
+            required:
+              - isResolved
+            properties:
+              isResolved:
+                type: "boolean"
+                description: "true to resolve the conversation, false to unresolve it"
+                example: "true"
       security:
         -
           bearerAuth:
@@ -4987,6 +4987,7 @@ paths:
           required: true
           schema:
             type: "string"
+          example: "507f1f77bcf86cd799439011"
           description: "Contact ID (ObjectId)"
       responses:
         "200":
