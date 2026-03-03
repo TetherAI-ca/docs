@@ -1713,7 +1713,7 @@ paths:
           content:
             "application/json":
               schema:
-                "$ref": "#/components/schemas/ApiError"
+                "$ref": "#/components/schemas/ApiErrorWithCode"
   "/api/auth/register":
     post:
       operationId: "post_api_auth_register"
@@ -11911,4 +11911,13 @@ components:
           type: "string"
         # code:
         #   type: "string"
+      description: "Generic error envelope. Endpoint-specific fields are intentionally open."
+    ApiErrorWithCode:
+      type: "object"
+      additionalProperties: true
+      properties:
+        error:
+          type: "string"
+        code:
+          type: "string"
       description: "Generic error envelope. Endpoint-specific fields are intentionally open."
