@@ -3,6 +3,10 @@ title: "Relay setup"
 description: "Install, configure, and run Tether Relay services locally."
 ---
 
+<Info>
+  This page is for internal/platform engineers running Relay locally. API customers should start at [Quickstart](/quickstart).
+</Info>
+
 ## Prerequisites
 
 - Node.js 18+
@@ -15,7 +19,7 @@ description: "Install, configure, and run Tether Relay services locally."
 ### SendGrid inbound service
 
 ```bash
-cd /Users/joshboyd/Code/tsuite/tether-relay-app/tether-relay/tools/sendgrid-inbound
+cd <your-repo-path>/tools/sendgrid-inbound
 pnpm install
 pnpm dev
 ```
@@ -23,7 +27,7 @@ pnpm dev
 ### Relay client
 
 ```bash
-cd /Users/joshboyd/Code/tsuite/tether-relay-app/tether-relay/client
+cd <your-repo-path>/client
 pnpm install
 pnpm dev
 ```
@@ -38,4 +42,4 @@ pnpm dev
 - `GET /webhook/health` returns `{"status":"ok"}`.
 - Client can authenticate against configured backend URL.
 
-Continue with [Environment variables](/relay/environment) before production use.
+Continue with [Environment variables](/relay/environment) before production use. For customer API onboarding, use [Quickstart](/quickstart).

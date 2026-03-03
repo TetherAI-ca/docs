@@ -3,6 +3,10 @@ title: "SendGrid inbound service"
 description: "Configure and operate the SendGrid inbound parser and webhook forwarder."
 ---
 
+<Info>
+  This page is for internal/platform engineers operating the inbound service. API customers should start at [Quickstart](/quickstart).
+</Info>
+
 The inbound service accepts SendGrid parse webhook payloads and forwards normalized data to upstream outreach APIs.
 
 ## Implemented routes
@@ -51,3 +55,5 @@ The payload includes routing configuration and pre-extracted fields needed by th
 - Invalid webhook payloads return 4xx responses.
 - Upstream forwarding failures are logged with status and response payload.
 - MongoDB connection failures terminate process startup.
+
+For customer-facing API onboarding, use [Quickstart](/quickstart), [Authentication](/guides/authentication), and [API reference](/api-reference/introduction).

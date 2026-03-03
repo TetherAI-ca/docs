@@ -32,7 +32,7 @@
             ]
           },
           {
-            "group": "Relay application",
+            "group": "Relay platform (internal)",
             "pages": [
               "relay/overview",
               "relay/setup",

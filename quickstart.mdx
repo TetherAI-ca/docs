@@ -1,60 +1,68 @@
 ---
 title: "Quickstart"
-description: "Get Tether Relay running locally and verify inbound webhook flow in minutes."
+description: "Authenticate and make your first successful Tether API request in minutes."
 ---
 
-This quickstart gets you from zero to a verified inbound webhook request.
+This quickstart is for API customers integrating with Tether endpoints.
 
 <Info>
-  You need Node.js 18+ and `pnpm` installed.
+  For local service/runtime setup, use [Relay setup](/relay/setup).
 </Info>
 
-## 1. Start the SendGrid inbound service
+## 1. Set your API base URL
+
+Use your hosted environment URL (not localhost for customer integrations).
 
 ```bash
-cd /Users/joshboyd/Code/tsuite/tether-relay-app/tether-relay/tools/sendgrid-inbound
-pnpm install
-PORT=3500 \
-LOG_LEVEL=info \
-MONGODB_URI='mongodb://localhost:27017/tether-relay' \
-TETHER_API_URL='http://localhost:2212' \
-INBOUND_EMAIL_DOMAIN='leads.staging.rvai.tetherai.ca' \
-pnpm dev
+export TETHER_API_BASE_URL="https://your-instance.example.com"
 ```
 
-## 2. Check service health
+## 2. Obtain a bearer token
 
 ```bash
-curl -s http://localhost:3500/
-curl -s http://localhost:3500/webhook/health
+curl -X POST "$TETHER_API_BASE_URL/api/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "your-email@example.com",
+    "password": "your-password"
+  }'
 ```
 
-Expected health response:
-
-```json
-{ "status": "ok" }
-```
-
-## 3. Send a test inbound email payload
+Store the returned token:
 
 ```bash
-curl -X POST "http://localhost:3500/webhook/sendgrid" \
-  -F "from=sender@example.com" \
-  -F "to=recipient@inbound.tether.com" \
-  -F "subject=Quickstart test" \
-  -F "text=Inbound test message from quickstart"
+export TETHER_TOKEN="<paste-jwt-token>"
 ```
 
-## 4. Verify forwarding behavior
+## 3. Verify authentication
 
-Check service logs for:
+```bash
+curl "$TETHER_API_BASE_URL/api/auth/verify-token" \
+  -H "Authorization: Bearer $TETHER_TOKEN"
+```
 
-- Parsed sender and recipient fields.
-- Extracted `configurationId` from inbound address.
-- Forwarding request to `${TETHER_API_URL}/api/webhook/outreach`.
+Expected result: `200` with a valid auth response payload.
+
+## 4. Make your first resource request
+
+```bash
+curl -G "$TETHER_API_BASE_URL/api/contacts" \
+  -H "Authorization: Bearer $TETHER_TOKEN" \
+  -d page=1 \
+  -d size=20
+```
+
+Expected result: `200` with a contacts list payload.
+
+## 5. Handle common errors quickly
+
+- `401 Unauthorized`: missing/expired/invalid bearer token.
+- `403 Forbidden`: authenticated but role lacks access.
+- `400 Bad Request`: invalid request payload/parameters.
 
 ## Next steps
 
 - Review [Authentication](/guides/authentication).
-- Configure all environment variables in [Relay environment](/relay/environment).
-- Productionize with [Operations runbook](/relay/operations).
+- Use [API guides](/api-guides/contacts) for workflow examples.
+- Use [API reference](/api-reference/introduction) for exact endpoint contracts.
+- For internal/local service setup, see [Relay setup](/relay/setup) and [SendGrid inbound service](/relay/sendgrid-inbound).
