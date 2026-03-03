@@ -6,10 +6,7 @@ info:
 servers:
   - 
     url: "https://api.staging.tetherai.ca"
-    description: "Staging"
-  -
-    url: "https://your-instance.example.com"
-    description: "Production"
+    description: "Staging
   -
     url: "http://localhost:2212"
     description: "Local API service"
