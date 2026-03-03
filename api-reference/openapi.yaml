@@ -811,88 +811,92 @@ paths:
             []
   "/api/ai/playground":
     post:
-      operationId: "post_api_ai_playground"
-      summary: "POST /api/ai/playground"
+      operationId: "post_ai_playground"
+      summary: "Generate playground AI response"
       tags:
         - "AI"
+      security:
+        -
+          bearerAuth:
+            []
+      requestBody:
+        required: true
+        content:
+          "application/json":
+            schema:
+              "$ref": "#/components/schemas/AIPlaygroundRequest"
       responses:
         "200":
-          description: "Successful response"
+          description: "AI response generated"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiResponse"
         "400":
-          description: "Bad request"
+          description: "Message and prompt id are required"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
+        "404":
+          description: "User or prompt not found"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiError"
         "500":
-          description: "Internal server error"
+          description: "Failed to process playground message"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiError"
-      requestBody:
-        required: false
-        content:
-          "application/json":
-            schema:
-              type: "object"
-              additionalProperties: true
-      security:
-        -
-          bearerAuth:
-            []
   "/api/ai/process":
     post:
-      operationId: "post_api_ai_process"
-      summary: "POST /api/ai/process"
+      operationId: "post_ai_process"
+      summary: "Generate AI response for conversation"
       tags:
         - "AI"
+      security:
+        -
+          bearerAuth:
+            []
+      requestBody:
+        required: true
+        content:
+          "application/json":
+            schema:
+              "$ref": "#/components/schemas/AIProcessRequest"
       responses:
         "200":
-          description: "Successful response"
+          description: "AI response generated"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiResponse"
         "400":
-          description: "Bad request"
+          description: "Invalid conversation id"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
+        "403":
+          description: "Not authorized for conversation"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiError"
+        "404":
+          description: "Conversation or context not found"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiError"
         "500":
-          description: "Internal server error"
+          description: "Failed to process chat request"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiError"
-      requestBody:
-        required: false
-        content:
-          "application/json":
-            schema:
-              type: "object"
-              additionalProperties: true
-      security:
-        -
-          bearerAuth:
-            []
   "/api/application-management":
     get:
       operationId: "get_api_application_management"
@@ -1140,111 +1144,114 @@ paths:
               additionalProperties: true
   "/api/applications":
     get:
-      operationId: "get_api_applications"
-      summary: "GET /api/applications"
+      operationId: "get_applications"
+      summary: "List applications by query filters"
       tags:
         - "Applications"
-      responses:
-        "200":
-          description: "Successful response"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiResponse"
-        "400":
-          description: "Bad request"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "500":
-          description: "Internal server error"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
       security:
         -
           bearerAuth:
             []
-    post:
-      operationId: "post_api_applications"
-      summary: "POST /api/applications"
-      tags:
-        - "Applications"
+      parameters:
+        -
+          in: "query"
+          name: "contactId"
+          required: false
+          schema:
+            type: "string"
+        -
+          in: "query"
+          name: "status"
+          required: false
+          schema:
+            type: "string"
+        -
+          in: "query"
+          name: "search"
+          required: false
+          schema:
+            type: "string"
+        -
+          in: "query"
+          name: "userId"
+          required: false
+          schema:
+            type: "string"
+        -
+          in: "query"
+          name: "pipelineStage"
+          required: false
+          schema:
+            type: "string"
+        -
+          in: "query"
+          name: "pipelineStageIds"
+          required: false
+          schema:
+            type: "string"
       responses:
         "200":
-          description: "Successful response"
+          description: "Applications returned"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiResponse"
-        "400":
-          description: "Bad request"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
         "500":
-          description: "Internal server error"
+          description: "Failed to fetch applications"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiError"
+    post:
+      operationId: "post_applications"
+      summary: "Create application"
+      tags:
+        - "Applications"
+      security:
+        -
+          bearerAuth:
+            []
       requestBody:
-        required: false
+        required: true
         content:
           "application/json":
             schema:
-              type: "object"
-              additionalProperties: true
-      security:
-        -
-          bearerAuth:
-            []
+              "$ref": "#/components/schemas/CreateApplicationRequest"
+      responses:
+        "201":
+          description: "Application created"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiResponse"
+        "400":
+          description: "Missing required fields"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiError"
+        "404":
+          description: "Contact not found"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiError"
+        "500":
+          description: "Failed to create application"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiError"
   "/api/applications/{id}":
     get:
-      operationId: "get_api_applications_id"
-      summary: "GET /api/applications/{id}"
+      operationId: "get_application_by_id"
+      summary: "Get application by id"
       tags:
         - "Applications"
-      responses:
-        "200":
-          description: "Successful response"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiResponse"
-        "400":
-          description: "Bad request"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "500":
-          description: "Internal server error"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
+      security:
+        -
+          bearerAuth:
+            []
       parameters:
         -
           in: "path"
@@ -1252,40 +1259,34 @@ paths:
           required: true
           schema:
             type: "string"
-      security:
-        -
-          bearerAuth:
-            []
-    put:
-      operationId: "put_api_applications_id"
-      summary: "PUT /api/applications/{id}"
-      tags:
-        - "Applications"
       responses:
         "200":
-          description: "Successful response"
+          description: "Application returned"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiResponse"
-        "400":
-          description: "Bad request"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
+        "404":
+          description: "Application not found"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiError"
         "500":
-          description: "Internal server error"
+          description: "Failed to fetch application"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiError"
+    put:
+      operationId: "put_application"
+      summary: "Update application"
+      tags:
+        - "Applications"
+      security:
+        -
+          bearerAuth:
+            []
       parameters:
         -
           in: "path"
@@ -1298,42 +1299,41 @@ paths:
         content:
           "application/json":
             schema:
-              type: "object"
-              additionalProperties: true
-      security:
-        -
-          bearerAuth:
-            []
-    delete:
-      operationId: "delete_api_applications_id"
-      summary: "DELETE /api/applications/{id}"
-      tags:
-        - "Applications"
+              "$ref": "#/components/schemas/UpdateApplicationRequest"
       responses:
         "200":
-          description: "Successful response"
+          description: "Application updated"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiResponse"
         "400":
-          description: "Bad request"
+          description: "Application id is required"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
+        "404":
+          description: "Application not found"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiError"
         "500":
-          description: "Internal server error"
+          description: "Failed to update application"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiError"
+    delete:
+      operationId: "delete_application"
+      summary: "Delete application"
+      tags:
+        - "Applications"
+      security:
+        -
+          bearerAuth:
+            []
       parameters:
         -
           in: "path"
@@ -1341,41 +1341,35 @@ paths:
           required: true
           schema:
             type: "string"
-      security:
-        -
-          bearerAuth:
-            []
+      responses:
+        "200":
+          description: "Application deleted"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiResponse"
+        "404":
+          description: "Application not found"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiError"
+        "500":
+          description: "Failed to delete application"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiError"
   "/api/applications/{id}/conversations":
     get:
-      operationId: "get_api_applications_id_conversations"
-      summary: "GET /api/applications/{id}/conversations"
+      operationId: "get_application_conversations"
+      summary: "Get conversations linked to application"
       tags:
         - "Applications"
-      responses:
-        "200":
-          description: "Successful response"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiResponse"
-        "400":
-          description: "Bad request"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "500":
-          description: "Internal server error"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
+      security:
+        -
+          bearerAuth:
+            []
       parameters:
         -
           in: "path"
@@ -1383,41 +1377,35 @@ paths:
           required: true
           schema:
             type: "string"
-      security:
-        -
-          bearerAuth:
-            []
+      responses:
+        "200":
+          description: "Conversations returned"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiResponse"
+        "404":
+          description: "Application not found"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiError"
+        "500":
+          description: "Failed to get application conversations"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiError"
   "/api/applications/{id}/time-to-contact":
     get:
-      operationId: "get_api_applications_id_time_to_contact"
-      summary: "GET /api/applications/{id}/time-to-contact"
+      operationId: "get_application_time_to_contact"
+      summary: "Calculate application time-to-contact"
       tags:
         - "Applications"
-      responses:
-        "200":
-          description: "Successful response"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiResponse"
-        "400":
-          description: "Bad request"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "500":
-          description: "Internal server error"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
+      security:
+        -
+          bearerAuth:
+            []
       parameters:
         -
           in: "path"
@@ -1425,167 +1413,122 @@ paths:
           required: true
           schema:
             type: "string"
-      security:
-        -
-          bearerAuth:
-            []
+      responses:
+        "200":
+          description: "Time-to-contact returned"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiResponse"
+        "404":
+          description: "Application not found"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiError"
+        "500":
+          description: "Failed to calculate time-to-contact"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiError"
   "/api/applications/list":
     post:
-      operationId: "post_api_applications_list"
-      summary: "POST /api/applications/list"
+      operationId: "post_applications_list"
+      summary: "List applications with pagination"
       tags:
         - "Applications"
-      responses:
-        "200":
-          description: "Successful response"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiResponse"
-        "400":
-          description: "Bad request"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "500":
-          description: "Internal server error"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
+      security:
+        -
+          bearerAuth:
+            []
       requestBody:
         required: false
         content:
           "application/json":
             schema:
-              type: "object"
-              additionalProperties: true
-      security:
-        -
-          bearerAuth:
-            []
+              "$ref": "#/components/schemas/ListApplicationsRequest"
+      responses:
+        "200":
+          description: "Applications returned"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiResponse"
+        "500":
+          description: "Failed to fetch applications"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiError"
   "/api/auth/activity":
     post:
-      operationId: "post_api_auth_activity"
-      summary: "POST /api/auth/activity"
+      operationId: "post_auth_activity"
+      summary: "Track authenticated user activity heartbeat"
       tags:
         - "Auth"
-      responses:
-        "200":
-          description: "Successful response"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiResponse"
-        "400":
-          description: "Bad request"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "500":
-          description: "Internal server error"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-      requestBody:
-        required: false
-        content:
-          "application/json":
-            schema:
-              type: "object"
-              additionalProperties: true
       security:
         -
           bearerAuth:
             []
+      responses:
+        "200":
+          description: "Activity tracked"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiResponse"
+        "401":
+          description: "Authentication required"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiError"
   "/api/auth/exit-impersonation":
     post:
-      operationId: "post_api_auth_exit_impersonation"
-      summary: "POST /api/auth/exit-impersonation"
+      operationId: "post_auth_exit_impersonation"
+      summary: "Exit impersonation and restore original admin session"
       tags:
         - "Auth"
-      responses:
-        "200":
-          description: "Successful response"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiResponse"
-        "400":
-          description: "Bad request"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "500":
-          description: "Internal server error"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-      requestBody:
-        required: false
-        content:
-          "application/json":
-            schema:
-              type: "object"
-              additionalProperties: true
       security:
         -
           bearerAuth:
             []
-  "/api/auth/impersonate/{userId}":
-    get:
-      operationId: "get_api_auth_impersonate_userId"
-      summary: "GET /api/auth/impersonate/{userId}"
-      tags:
-        - "Auth"
+      requestBody:
+        required: true
+        content:
+          "application/json":
+            schema:
+              "$ref": "#/components/schemas/AuthExitImpersonationRequest"
       responses:
         "200":
-          description: "Successful response"
+          description: "Impersonation exited"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiResponse"
         "400":
-          description: "Bad request"
+          description: "Missing original admin credentials"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiError"
         "401":
-          description: "Unauthorized"
+          description: "Invalid original admin token"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiError"
-        "500":
-          description: "Internal server error"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
+  "/api/auth/impersonate/{userId}":
+    get:
+      operationId: "get_auth_impersonate_user"
+      summary: "Get impersonation credentials for a user"
+      tags:
+        - "Auth"
+      security:
+        -
+          bearerAuth:
+            []
       parameters:
         -
           in: "path"
@@ -1659,105 +1602,101 @@ paths:
         - "Auth"
       responses:
         "200":
-          description: "Successful response"
+          description: "Login successful"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiResponse"
-        "400":
-          description: "Bad request"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
         "401":
-          description: "Unauthorized"
+          description: "Invalid credentials"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiError"
-        "500":
-          description: "Internal server error"
+  "/api/auth/okta/authorize":
+    get:
+      operationId: "get_auth_okta_authorize"
+      summary: "Start Okta authorization flow via WorkOS"
+      tags:
+        - "Auth"
+      parameters:
+        -
+          in: "query"
+          name: "redirect_uri"
+          required: false
+          schema:
+            type: "string"
+        -
+          in: "query"
+          name: "state"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        "302":
+          description: "Redirect to Okta authorization URL"
+        "400":
+          description: "Okta or WorkOS is not configured"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiError"
   "/api/auth/refresh":
     post:
-      operationId: "post_api_auth_refresh"
-      summary: "POST /api/auth/refresh"
+      operationId: "post_auth_refresh"
+      summary: "Refresh session tokens"
       tags:
         - "Auth"
+      requestBody:
+        required: true
+        content:
+          "application/json":
+            schema:
+              "$ref": "#/components/schemas/AuthRefreshTokenRequest"
       responses:
         "200":
-          description: "Successful response"
+          description: "Token refreshed"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiResponse"
         "400":
-          description: "Bad request"
+          description: "Missing refresh token"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiError"
         "401":
-          description: "Unauthorized"
+          description: "Invalid or expired refresh token"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiError"
-        "500":
-          description: "Internal server error"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-      requestBody:
-        required: false
-        content:
-          "application/json":
-            schema:
-              type: "object"
-              additionalProperties: true
   "/api/auth/register":
     post:
-      operationId: "post_api_auth_register"
-      summary: "POST /api/auth/register"
+      operationId: "post_auth_register"
+      summary: "Register user"
       tags:
         - "Auth"
+      requestBody:
+        required: true
+        content:
+          "application/json":
+            schema:
+              "$ref": "#/components/schemas/AuthRegisterRequest"
       responses:
-        "200":
-          description: "Successful response"
+        "201":
+          description: "User registered"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiResponse"
         "400":
-          description: "Bad request"
+          description: "Validation error"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "500":
-          description: "Internal server error"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-      requestBody:
-        required: false
-        content:
-          "application/json":
-            schema:
-              type: "object"
-              additionalProperties: true
   "/api/auth/verify-token":
     get:
       operationId: "get_api_auth_verify_token"
@@ -1791,130 +1730,117 @@ paths:
                 "$ref": "#/components/schemas/ApiError"
   "/api/auth/workos/authorize":
     get:
-      operationId: "get_api_auth_workos_authorize"
-      summary: "GET /api/auth/workos/authorize"
+      operationId: "get_auth_workos_authorize"
+      summary: "Start WorkOS authorization flow"
       tags:
         - "Auth"
+      parameters:
+        -
+          in: "query"
+          name: "redirect_uri"
+          required: false
+          schema:
+            type: "string"
+        -
+          in: "query"
+          name: "state"
+          required: false
+          schema:
+            type: "string"
       responses:
-        "200":
-          description: "Successful response"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiResponse"
+        "302":
+          description: "Redirect to WorkOS authorization URL"
         "400":
-          description: "Bad request"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "500":
-          description: "Internal server error"
+          description: "WorkOS is not enabled"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiError"
   "/api/auth/workos/callback":
     get:
-      operationId: "get_api_auth_workos_callback"
-      summary: "GET /api/auth/workos/callback"
+      operationId: "get_auth_workos_callback"
+      summary: "Handle WorkOS callback (browser redirect)"
       tags:
         - "Auth"
+      parameters:
+        -
+          in: "query"
+          name: "code"
+          required: false
+          schema:
+            type: "string"
+        -
+          in: "query"
+          name: "state"
+          required: false
+          schema:
+            type: "string"
+        -
+          in: "query"
+          name: "error"
+          required: false
+          schema:
+            type: "string"
+        -
+          in: "query"
+          name: "redirect_uri"
+          required: false
+          schema:
+            type: "string"
       responses:
-        "200":
-          description: "Successful response"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiResponse"
-        "400":
-          description: "Bad request"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
+        "302":
+          description: "Redirect back to frontend sign-in page"
         "500":
-          description: "Internal server error"
+          description: "Callback handling failed"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiError"
     post:
-      operationId: "post_api_auth_workos_callback"
-      summary: "POST /api/auth/workos/callback"
+      operationId: "post_auth_workos_callback"
+      summary: "Handle WorkOS callback (API response mode)"
       tags:
         - "Auth"
-      responses:
-        "200":
-          description: "Successful response"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiResponse"
-        "400":
-          description: "Bad request"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "500":
-          description: "Internal server error"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
       requestBody:
         required: false
         content:
           "application/json":
             schema:
-              type: "object"
-              additionalProperties: true
-  "/api/auth/workos/client-id":
-    get:
-      operationId: "get_api_auth_workos_client_id"
-      summary: "GET /api/auth/workos/client-id"
-      tags:
-        - "Auth"
+              "$ref": "#/components/schemas/AuthWorkOSCallbackRequest"
       responses:
         "200":
-          description: "Successful response"
+          description: "Auth session created"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiResponse"
         "400":
-          description: "Bad request"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
-        "401":
-          description: "Unauthorized"
+          description: "No authorization code or callback error"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiError"
         "500":
-          description: "Internal server error"
+          description: "Callback handling failed"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiError"
+  "/api/auth/workos/client-id":
+    get:
+      operationId: "get_auth_workos_client_id"
+      summary: "Get WorkOS client id"
+      tags:
+        - "Auth"
+      responses:
+        "200":
+          description: "Client id returned"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiResponse"
+        "500":
+          description: "WorkOS client id is not configured"
           content:
             "application/json":
               schema:
@@ -12345,6 +12271,185 @@ components:
         code:
           type: "string"
       description: "Generic error envelope. Endpoint-specific fields are intentionally open."
+    AIPlaygroundRequest:
+      type: "object"
+      properties:
+        message:
+          type: "string"
+        promptId:
+          type: "string"
+        conversationId:
+          type: "string"
+        conversation:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              role:
+                type: "string"
+              content:
+                type: "string"
+            additionalProperties: true
+      required:
+        - "message"
+        - "promptId"
+      additionalProperties: true
+    AIProcessRequest:
+      type: "object"
+      properties:
+        conversationId:
+          type: "string"
+        mergeContextPrompt:
+          type: "string"
+      required:
+        - "conversationId"
+      additionalProperties: true
+    CreateApplicationRequest:
+      type: "object"
+      properties:
+        contactId:
+          type: "string"
+        name:
+          type: "string"
+        status:
+          type: "string"
+        pipelineStage:
+          type: "string"
+        pipelineId:
+          type: "string"
+        userId:
+          type: "string"
+      required:
+        - "contactId"
+        - "name"
+      anyOf:
+        -
+          required:
+            - "status"
+        -
+          required:
+            - "pipelineStage"
+      additionalProperties: true
+    ListApplicationsRequest:
+      type: "object"
+      properties:
+        page:
+          type: "integer"
+          minimum: 1
+          default: 1
+        size:
+          type: "integer"
+          minimum: 1
+          default: 10
+        search:
+          type: "string"
+        contactId:
+          type: "string"
+        status:
+          type: "string"
+        userId:
+          type: "string"
+        pipelineStage:
+          type: "string"
+        pipelineStageIds:
+          oneOf:
+            -
+              type: "string"
+            -
+              type: "array"
+              items:
+                type: "string"
+      additionalProperties: true
+    UpdateApplicationRequest:
+      type: "object"
+      properties:
+        _id:
+          type: "string"
+        fromHistoryModal:
+          type: "boolean"
+        pipelineId:
+          type: "string"
+      additionalProperties: true
+    AuthLoginRequest:
+      type: "object"
+      properties:
+        email:
+          type: "string"
+          format: "email"
+        password:
+          type: "string"
+        impersonationToken:
+          type: "string"
+      required:
+        - "email"
+      oneOf:
+        -
+          required:
+            - "password"
+        -
+          required:
+            - "impersonationToken"
+      additionalProperties: false
+    AuthRefreshTokenRequest:
+      type: "object"
+      properties:
+        refreshToken:
+          type: "string"
+      required:
+        - "refreshToken"
+      additionalProperties: false
+    AuthRegisterRequest:
+      type: "object"
+      properties:
+        email:
+          type: "string"
+          format: "email"
+        password:
+          type: "string"
+        fullName:
+          type: "string"
+        organizationId:
+          type: "string"
+        accessRole:
+          type: "string"
+        phoneNumber:
+          type: "string"
+        sinchPhoneNumber:
+          type: "string"
+        designation:
+          type: "string"
+        departmentId:
+          type: "string"
+      required:
+        - "email"
+        - "password"
+      additionalProperties: true
+    AuthExitImpersonationRequest:
+      type: "object"
+      properties:
+        originalAdminToken:
+          type: "string"
+        originalAdminUser:
+          type: "object"
+          additionalProperties: true
+      required:
+        - "originalAdminToken"
+        - "originalAdminUser"
+      additionalProperties: false
+    AuthWorkOSCallbackRequest:
+      type: "object"
+      properties:
+        code:
+          type: "string"
+        state:
+          type: "string"
+        error:
+          type: "string"
+        redirect_uri:
+          type: "string"
+        organizationId:
+          type: "string"
+      additionalProperties: true
     ContactDto:
       type: "object"
       properties:

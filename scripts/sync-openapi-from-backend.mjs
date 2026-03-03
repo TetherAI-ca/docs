@@ -28,7 +28,7 @@ const sendgridEntryCandidates = [
   path.resolve(backendRoot, 'tools/sendgrid-inbound/src/index.ts'),
 ];
 const sendgridEntry = sendgridEntryCandidates.find((candidate) => fs.existsSync(candidate));
-const coreContractOpenApiPath = path.resolve(projectRoot, '../core/dist/contracts/contact/openapi.js');
+const coreContractsIndexPath = path.resolve(projectRoot, '../core/dist/contracts/index.js');
 
 const ROUTE_METHOD_ORDER = ['get', 'post', 'put', 'patch', 'delete', 'options', 'head'];
 const METHOD_ORDER_INDEX = new Map(ROUTE_METHOD_ORDER.map((method, index) => [method, index]));
@@ -84,16 +84,24 @@ function deepMerge(target, source) {
 }
 
 async function loadContractOpenApiOverrides() {
-  if (!fs.existsSync(coreContractOpenApiPath)) {
+  if (!fs.existsSync(coreContractsIndexPath)) {
     console.warn(
-      `[sync-openapi] Core contract OpenAPI not found at ${coreContractOpenApiPath}. Run: pnpm -C ../core run build`,
+      `[sync-openapi] Core contracts index not found at ${coreContractsIndexPath}. Run: pnpm -C ../core run build`,
     );
     return null;
   }
 
   try {
-    const module = await import(coreContractOpenApiPath);
-    return module.contactOpenApiContract || null;
+    const module = await import(coreContractsIndexPath);
+    const openApiContracts = Object.entries(module)
+      .filter(([name, value]) => name.endsWith('OpenApiContract') && isPlainObject(value))
+      .map(([, value]) => value);
+
+    if (openApiContracts.length === 0) {
+      return null;
+    }
+
+    return openApiContracts.reduce((acc, contract) => deepMerge(acc, contract), {});
   } catch (error) {
     console.warn('[sync-openapi] Failed to import core contract OpenAPI overrides:', error);
     return null;
