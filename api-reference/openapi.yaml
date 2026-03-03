@@ -1609,7 +1609,7 @@ paths:
         - "Auth"
       requestBody:
         required: true
-       content:
+        content:
         "application/json":
           schema:
             type: "object"
