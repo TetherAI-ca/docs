@@ -4766,6 +4766,29 @@ paths:
       summary: "POST /api/conversation/{id}/applications/unlink"
       tags:
         - "Conversations"
+      parameters:
+        -
+          in: "path"
+          name: "id"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        required: true
+        content:
+          "application/json":
+            schema:
+              type: "object"
+              required:
+                - applicationIds
+              properties:
+                applicationIds:
+                  type: "array"
+                  items:
+                    type: "string"
+                  description: "Array of application IDs to unlink from the conversation"
+                  minItems: 1
+                  example: ["507f1f77bcf86cd799439011", "507f1f77bcf86cd799439012"]
       responses:
         "200":
           description: "Successful response"
@@ -4791,29 +4814,6 @@ paths:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiError"
-      parameters:
-        -
-          in: "path"
-          name: "id"
-          required: true
-          schema:
-            type: "string"
-      requestBody:
-        required: true
-        content:
-          "application/json":
-            schema:
-              type: "object"
-              required:
-                - applicationIds
-              properties:
-                applicationIds:
-                  type: "array"
-                  items:
-                    type: "string"
-                  description: "Array of application IDs to unlink from the conversation"
-                  minItems: 1
-                  example: ["507f1f77bcf86cd799439011", "507f1f77bcf86cd799439012"]
       security:
         -
           bearerAuth:
