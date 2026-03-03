@@ -4799,12 +4799,21 @@ paths:
           schema:
             type: "string"
       requestBody:
-        required: false
+        required: true
         content:
           "application/json":
             schema:
               type: "object"
-              additionalProperties: true
+              required:
+                - applicationIds
+              properties:
+                applicationIds:
+                  type: "array"
+                  items:
+                    type: "string"
+                  description: "Array of application IDs to unlink from the conversation"
+                  minItems: 1
+                  example: ["507f1f77bcf86cd799439011", "507f1f77bcf86cd799439012"]
       security:
         -
           bearerAuth:
