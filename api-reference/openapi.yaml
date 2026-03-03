@@ -1777,6 +1777,10 @@ paths:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiError"
+      security:
+          -
+            bearerAuth:
+              []
   "/api/auth/workos/authorize":
     get:
       operationId: "get_api_auth_workos_authorize"
