@@ -4815,6 +4815,26 @@ paths:
       summary: "POST /api/conversation/{id}/csat"
       tags:
         - "Conversations"
+      requestBody:
+        required: true
+        content:
+          "application/json":
+            schema:
+              type: "object"
+              required:
+                - rating
+              properties:
+                rating:
+                  type: "integer"
+                  minimum: 1
+                  maximum: 5
+                  description: "CSAT rating (1-5 stars)"
+                  example: 5
+                feedback:
+                  type: "string"
+                  maxLength: 2000
+                  description: "Optional feedback text (max 2000 characters)"
+                  example: "Great service!"
       responses:
         "200":
           description: "Successful response"
@@ -4847,13 +4867,6 @@ paths:
           required: true
           schema:
             type: "string"
-      requestBody:
-        required: false
-        content:
-          "application/json":
-            schema:
-              type: "object"
-              additionalProperties: true
       security:
         -
           bearerAuth:
