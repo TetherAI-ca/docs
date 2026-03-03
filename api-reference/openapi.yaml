@@ -1607,6 +1607,29 @@ paths:
       summary: "POST /api/auth/login"
       tags:
         - "Auth"
+      requestBody:
+       required: true
+       content:
+        "application/json":
+          schema:
+            type: "object"
+            required:
+              - email
+            properties:
+              email:
+                type: "string"
+                format: "email"
+                description: "User email address"
+                example: "user@example.com"
+              password:
+                type: "string"
+                format: "password"
+                description: "User password (required for regular login)"
+                example: "your-password"
+              impersonationToken:
+                type: "string"
+                description: "Impersonation token (optional, used for admin impersonation instead of password)"
+                example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
       responses:
         "200":
           description: "Successful response"
@@ -1632,13 +1655,6 @@ paths:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiError"
-      requestBody:
-        required: false
-        content:
-          "application/json":
-            schema:
-              type: "object"
-              additionalProperties: true
   "/api/auth/okta/authorize":
     get:
       operationId: "get_api_auth_okta_authorize"
