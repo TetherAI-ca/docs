@@ -1707,13 +1707,13 @@ paths:
           content:
             "application/json":
               schema:
-                "$ref": "#/components/schemas/ApiError"
+                "$ref": "#/components/schemas/ApiErrorWithCode"
         "500":
           description: "Internal server error"
           content:
             "application/json":
               schema:
-                "$ref": "#/components/schemas/ApiErrorWithCode"
+                "$ref": "#/components/schemas/ApiError"
   "/api/auth/register":
     post:
       operationId: "post_api_auth_register"
