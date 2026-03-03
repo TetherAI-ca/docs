@@ -42,8 +42,7 @@ node scripts/sync-openapi-from-backend.mjs --write
 ## Key files
 
 - `docs.json`: site configuration, navigation, redirects
-- `api-reference/openapi.yaml`: route-derived API contract entrypoint for generated reference pages
-- `api-reference/openapi/`: split path and component partials referenced by `api-reference/openapi.yaml`
+- `api-reference/openapi.yaml`: route-derived API contract for generated reference pages
 - `scripts/sync-openapi-from-backend.mjs`: backend-to-OpenAPI synchronization/check script
 - `relay/*`: Relay product and operations docs
 - `api-guides/*`: workflow-focused API usage docs

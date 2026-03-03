@@ -1,8 +1,0 @@
-type: "object"
-additionalProperties: true
-properties:
-  message:
-    type: "string"
-  code:
-    type: "string"
-description: "Generic error envelope. Endpoint-specific fields are intentionally open."

@@ -1,3 +1,0 @@
-type: "object"
-additionalProperties: true
-description: "Generic response envelope. Endpoint-specific fields are intentionally open."
