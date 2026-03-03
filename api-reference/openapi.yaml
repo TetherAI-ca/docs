@@ -4975,6 +4975,14 @@ paths:
       summary: "GET /api/conversation/all"
       tags:
         - "Conversations"
+      parameters:
+        - name: contactId
+          in: query
+          required: true
+          schema:
+            type: "string"
+            example: "507f1f77bcf86cd799439011"
+          description: "Contact ID (ObjectId)"
       responses:
         "200":
           description: "Successful response"
