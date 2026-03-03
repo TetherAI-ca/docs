@@ -50,7 +50,6 @@
             "pages": [
               "api-guides/organizations",
               "api-guides/users",
-              "api-guides/groups",
               "api-guides/attachments",
               "api-guides/errors",
               "api-guides/sdks"
@@ -147,10 +146,6 @@
     {
       "source": "/outreach",
       "destination": "/api-guides/outreach"
-    },
-    {
-      "source": "/groups",
-      "destination": "/api-guides/groups"
     },
     {
       "source": "/attachments",
