@@ -1,0 +1,30 @@
+get:
+  operationId: "get_api_auth_okta_authorize"
+  summary: "GET /api/auth/okta/authorize"
+  tags:
+    - "Auth"
+  responses:
+    "200":
+      description: "Successful response"
+      content:
+        "application/json":
+          schema:
+            "$ref": "#/components/schemas/ApiResponse"
+    "400":
+      description: "Bad request"
+      content:
+        "application/json":
+          schema:
+            "$ref": "#/components/schemas/ApiError"
+    "401":
+      description: "Unauthorized"
+      content:
+        "application/json":
+          schema:
+            "$ref": "#/components/schemas/ApiError"
+    "500":
+      description: "Internal server error"
+      content:
+        "application/json":
+          schema:
+            "$ref": "#/components/schemas/ApiError"

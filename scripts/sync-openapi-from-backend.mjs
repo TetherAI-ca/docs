@@ -15,6 +15,7 @@ const backendRoot =
     : defaultBackendRoot;
 
 const outputPath = path.resolve(projectRoot, 'api-reference/openapi.yaml');
+const outputPartsRoot = path.resolve(projectRoot, 'api-reference/openapi');
 const apiEntry = path.resolve(backendRoot, 'api/src/index.ts');
 const sendgridEntry = path.resolve(backendRoot, 'tools/sendgrid-inbound/src/index.ts');
 
@@ -555,6 +556,122 @@ function generateYaml() {
   return `${emitYaml(spec).join('\n')}\n`;
 }
 
+function toPathFileName(pathValue) {
+  if (pathValue === '/') return '__root__.yaml';
+  return `${pathValue
+    .replace(/^\//, '')
+    .replace(/[{}]/g, '')
+    .replace(/[^A-Za-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '')
+    .toLowerCase()}.yaml`;
+}
+
+function buildSplitOpenApiFiles() {
+  const spec = buildOpenApiSpec();
+  const files = new Map();
+
+  const rootSpec = {
+    openapi: spec.openapi,
+    info: spec.info,
+    servers: spec.servers,
+    tags: spec.tags,
+    paths: {},
+    components: {
+      securitySchemes: {},
+      schemas: {},
+    },
+  };
+
+  const pathEntries = Object.keys(spec.paths).sort((a, b) => a.localeCompare(b));
+  for (const pathValue of pathEntries) {
+    const fileName = toPathFileName(pathValue);
+    const relativePath = `./openapi/paths/${fileName}`;
+    rootSpec.paths[pathValue] = { $ref: relativePath };
+    files.set(path.resolve(outputPartsRoot, 'paths', fileName), `${emitYaml(spec.paths[pathValue]).join('\n')}\n`);
+  }
+
+  const securitySchemeEntries = Object.entries(spec.components?.securitySchemes || {}).sort(([a], [b]) =>
+    a.localeCompare(b),
+  );
+  for (const [name, value] of securitySchemeEntries) {
+    const fileName = `${name}.yaml`;
+    const relativePath = `./openapi/components/securitySchemes/${fileName}`;
+    rootSpec.components.securitySchemes[name] = { $ref: relativePath };
+    files.set(
+      path.resolve(outputPartsRoot, 'components', 'securitySchemes', fileName),
+      `${emitYaml(value).join('\n')}\n`,
+    );
+  }
+
+  const schemaEntries = Object.entries(spec.components?.schemas || {}).sort(([a], [b]) => a.localeCompare(b));
+  for (const [name, value] of schemaEntries) {
+    const fileName = `${name}.yaml`;
+    const relativePath = `./openapi/components/schemas/${fileName}`;
+    rootSpec.components.schemas[name] = { $ref: relativePath };
+    files.set(path.resolve(outputPartsRoot, 'components', 'schemas', fileName), `${emitYaml(value).join('\n')}\n`);
+  }
+
+  files.set(outputPath, `${emitYaml(rootSpec).join('\n')}\n`);
+  return files;
+}
+
+function listExistingSplitFiles() {
+  if (!fs.existsSync(outputPartsRoot)) return [];
+  const all = [];
+  const stack = [outputPartsRoot];
+  while (stack.length > 0) {
+    const current = stack.pop();
+    for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
+      const fullPath = path.join(current, entry.name);
+      if (entry.isDirectory()) {
+        stack.push(fullPath);
+      } else {
+        all.push(path.resolve(fullPath));
+      }
+    }
+  }
+  return all.sort((a, b) => a.localeCompare(b));
+}
+
+function ensureDirForFile(filePath) {
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+}
+
+function writeSplitFiles(expectedFiles) {
+  const expectedPaths = new Set(expectedFiles.keys());
+  const existingPartFiles = listExistingSplitFiles();
+  for (const existingFile of existingPartFiles) {
+    if (!expectedPaths.has(existingFile)) {
+      fs.rmSync(existingFile, { force: true });
+    }
+  }
+
+  for (const [filePath, content] of expectedFiles.entries()) {
+    ensureDirForFile(filePath);
+    fs.writeFileSync(filePath, content, 'utf8');
+  }
+}
+
+function diffSplitFiles(expectedFiles) {
+  const expectedPaths = [...expectedFiles.keys()].sort((a, b) => a.localeCompare(b));
+  const existingPartFiles = listExistingSplitFiles();
+  const partsPrefix = `${outputPartsRoot}${path.sep}`;
+  const expectedPartFiles = expectedPaths.filter((filePath) => filePath.startsWith(partsPrefix));
+
+  const missingFiles = expectedPartFiles.filter((filePath) => !existingPartFiles.includes(filePath));
+  const extraFiles = existingPartFiles.filter((filePath) => !expectedPartFiles.includes(filePath));
+  const changedFiles = [];
+
+  for (const [filePath, expectedContent] of expectedFiles.entries()) {
+    const currentContent = fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf8') : '';
+    if (currentContent !== expectedContent) {
+      changedFiles.push(filePath);
+    }
+  }
+
+  return { missingFiles, extraFiles, changedFiles };
+}
+
 if (!fs.existsSync(apiEntry)) {
   fail(`API entrypoint not found: ${apiEntry}`);
 }
@@ -562,17 +679,38 @@ if (!fs.existsSync(sendgridEntry)) {
   fail(`SendGrid entrypoint not found: ${sendgridEntry}`);
 }
 
-const generatedYaml = generateYaml();
-const currentYaml = fs.existsSync(outputPath) ? fs.readFileSync(outputPath, 'utf8') : '';
+const expectedFiles = buildSplitOpenApiFiles();
 
 if (mode === 'write') {
-  fs.writeFileSync(outputPath, generatedYaml, 'utf8');
-  console.log(`OpenAPI regenerated at ${path.relative(projectRoot, outputPath)}`);
+  writeSplitFiles(expectedFiles);
+  console.log(`OpenAPI regenerated at ${path.relative(projectRoot, outputPath)} (split refs in api-reference/openapi/)`);
   process.exit(0);
 }
 
-if (generatedYaml !== currentYaml) {
-  console.error(`OpenAPI drift detected in ${path.relative(projectRoot, outputPath)}.`);
+const drift = diffSplitFiles(expectedFiles);
+if (drift.missingFiles.length > 0 || drift.extraFiles.length > 0 || drift.changedFiles.length > 0) {
+  console.error(`OpenAPI drift detected in ${path.relative(projectRoot, outputPath)} and split files.`);
+  if (drift.missingFiles.length > 0) {
+    console.error('Missing files:');
+    for (const filePath of drift.missingFiles) {
+      console.error(`  - ${path.relative(projectRoot, filePath)}`);
+    }
+  }
+  if (drift.extraFiles.length > 0) {
+    console.error('Unexpected files:');
+    for (const filePath of drift.extraFiles) {
+      console.error(`  - ${path.relative(projectRoot, filePath)}`);
+    }
+  }
+  if (drift.changedFiles.length > 0) {
+    console.error('Changed files:');
+    for (const filePath of drift.changedFiles.slice(0, 20)) {
+      console.error(`  - ${path.relative(projectRoot, filePath)}`);
+    }
+    if (drift.changedFiles.length > 20) {
+      console.error(`  ...and ${drift.changedFiles.length - 20} more`);
+    }
+  }
   console.error('Run: node scripts/sync-openapi-from-backend.mjs --write');
   process.exit(1);
 }

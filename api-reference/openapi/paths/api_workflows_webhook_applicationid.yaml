@@ -1,0 +1,48 @@
+post:
+  operationId: "post_api_workflows_webhook_applicationId"
+  summary: "POST /api/workflows/webhook/{applicationId}"
+  tags:
+    - "Automations"
+  responses:
+    "200":
+      description: "Successful response"
+      content:
+        "application/json":
+          schema:
+            "$ref": "#/components/schemas/ApiResponse"
+    "400":
+      description: "Bad request"
+      content:
+        "application/json":
+          schema:
+            "$ref": "#/components/schemas/ApiError"
+    "401":
+      description: "Unauthorized"
+      content:
+        "application/json":
+          schema:
+            "$ref": "#/components/schemas/ApiError"
+    "500":
+      description: "Internal server error"
+      content:
+        "application/json":
+          schema:
+            "$ref": "#/components/schemas/ApiError"
+  parameters:
+    -
+      in: "path"
+      name: "applicationId"
+      required: true
+      schema:
+        type: "string"
+  requestBody:
+    required: false
+    content:
+      "application/json":
+        schema:
+          type: "object"
+          additionalProperties: true
+  security:
+    -
+      bearerAuth:
+        []

@@ -1,0 +1,101 @@
+put:
+  operationId: "put_api_ai_models_organization_organizationId_provider_providerId"
+  summary: "PUT /api/ai-models/organization/{organizationId}/provider/{providerId}"
+  tags:
+    - "AI"
+  responses:
+    "200":
+      description: "Successful response"
+      content:
+        "application/json":
+          schema:
+            "$ref": "#/components/schemas/ApiResponse"
+    "400":
+      description: "Bad request"
+      content:
+        "application/json":
+          schema:
+            "$ref": "#/components/schemas/ApiError"
+    "401":
+      description: "Unauthorized"
+      content:
+        "application/json":
+          schema:
+            "$ref": "#/components/schemas/ApiError"
+    "500":
+      description: "Internal server error"
+      content:
+        "application/json":
+          schema:
+            "$ref": "#/components/schemas/ApiError"
+  parameters:
+    -
+      in: "path"
+      name: "organizationId"
+      required: true
+      schema:
+        type: "string"
+    -
+      in: "path"
+      name: "providerId"
+      required: true
+      schema:
+        type: "string"
+  requestBody:
+    required: false
+    content:
+      "application/json":
+        schema:
+          type: "object"
+          additionalProperties: true
+  security:
+    -
+      bearerAuth:
+        []
+delete:
+  operationId: "delete_api_ai_models_organization_organizationId_provider_providerId"
+  summary: "DELETE /api/ai-models/organization/{organizationId}/provider/{providerId}"
+  tags:
+    - "AI"
+  responses:
+    "200":
+      description: "Successful response"
+      content:
+        "application/json":
+          schema:
+            "$ref": "#/components/schemas/ApiResponse"
+    "400":
+      description: "Bad request"
+      content:
+        "application/json":
+          schema:
+            "$ref": "#/components/schemas/ApiError"
+    "401":
+      description: "Unauthorized"
+      content:
+        "application/json":
+          schema:
+            "$ref": "#/components/schemas/ApiError"
+    "500":
+      description: "Internal server error"
+      content:
+        "application/json":
+          schema:
+            "$ref": "#/components/schemas/ApiError"
+  parameters:
+    -
+      in: "path"
+      name: "organizationId"
+      required: true
+      schema:
+        type: "string"
+    -
+      in: "path"
+      name: "providerId"
+      required: true
+      schema:
+        type: "string"
+  security:
+    -
+      bearerAuth:
+        []

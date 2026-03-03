@@ -1,0 +1,67 @@
+get:
+  operationId: "get_api_auth_workos_callback"
+  summary: "GET /api/auth/workos/callback"
+  tags:
+    - "Auth"
+  responses:
+    "200":
+      description: "Successful response"
+      content:
+        "application/json":
+          schema:
+            "$ref": "#/components/schemas/ApiResponse"
+    "400":
+      description: "Bad request"
+      content:
+        "application/json":
+          schema:
+            "$ref": "#/components/schemas/ApiError"
+    "401":
+      description: "Unauthorized"
+      content:
+        "application/json":
+          schema:
+            "$ref": "#/components/schemas/ApiError"
+    "500":
+      description: "Internal server error"
+      content:
+        "application/json":
+          schema:
+            "$ref": "#/components/schemas/ApiError"
+post:
+  operationId: "post_api_auth_workos_callback"
+  summary: "POST /api/auth/workos/callback"
+  tags:
+    - "Auth"
+  responses:
+    "200":
+      description: "Successful response"
+      content:
+        "application/json":
+          schema:
+            "$ref": "#/components/schemas/ApiResponse"
+    "400":
+      description: "Bad request"
+      content:
+        "application/json":
+          schema:
+            "$ref": "#/components/schemas/ApiError"
+    "401":
+      description: "Unauthorized"
+      content:
+        "application/json":
+          schema:
+            "$ref": "#/components/schemas/ApiError"
+    "500":
+      description: "Internal server error"
+      content:
+        "application/json":
+          schema:
+            "$ref": "#/components/schemas/ApiError"
+  requestBody:
+    required: false
+    content:
+      "application/json":
+        schema:
+          type: "object"
+          additionalProperties: true

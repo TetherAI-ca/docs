@@ -23,7 +23,7 @@ The route-sync check scans:
 
 It enforces:
 
-- Every documented path and method in `api-reference/openapi.yaml` is derived from backend route declarations.
+- Every documented path and method in `api-reference/openapi.yaml` and split partials under `api-reference/openapi/` is derived from backend route declarations.
 - Path params are normalized from Express syntax (`:id`) to OpenAPI syntax (`{id}`).
 - Auth requirements from global and route-level middleware are reflected in endpoint security metadata.
 
