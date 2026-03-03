@@ -1626,10 +1626,10 @@ paths:
                   format: password
                   description: User password (required for regular login)
                   example: your-password
-                impersonationToken:
-                  type: string
-                  description: Impersonation token (optional, used for admin impersonation instead of password)
-                  example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                # impersonationToken:
+                #   type: string
+                #   description: Impersonation token (optional, used for admin impersonation instead of password)
+                #   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
       responses:
         "200":
           description: Successful response
