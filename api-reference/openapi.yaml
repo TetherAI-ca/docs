@@ -1676,6 +1676,19 @@ paths:
       summary: "POST /api/auth/refresh"
       tags:
         - "Auth"
+      requestBody:
+       required: true
+       content:
+        "application/json":
+          schema:
+            type: "object"
+            required:
+              - refreshToken
+            properties:
+              refreshToken:
+                type: "string"
+                description: "The refresh token to exchange for a new access token"
+                example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
       responses:
         "200":
           description: "Successful response"
@@ -1701,13 +1714,6 @@ paths:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiError"
-      requestBody:
-        required: false
-        content:
-          "application/json":
-            schema:
-              type: "object"
-              additionalProperties: true
   "/api/auth/register":
     post:
       operationId: "post_api_auth_register"
