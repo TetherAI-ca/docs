@@ -1,29 +1,88 @@
 ---
 title: "Outreach webhook"
-description: "Forward and process outreach webhooks from Relay and partner systems."
+description: "Trigger outreach processing for leads via the API."
 ---
 
-The outreach webhook endpoint accepts normalized lead and message events.
+The outreach webhook endpoint accepts lead data and triggers outreach processing for a given configuration.
 
-## Endpoint in this guide
+## Endpoint
 
 - `POST /api/webhook/outreach`
 
-## Example request
+## Authentication
+
+This endpoint is authenticated using your **API Integration Key**, not a JWT session token.
+
+1. Go to **Settings > General Settings** in the Tether dashboard.
+2. Copy your **API Integration Key** (or regenerate one if you don't have one yet).
+3. Pass it in the `Authorization` header:
+
+```
+Authorization: Bearer <your-api-key>
+```
+
+## Required fields
+
+| Field | Type | Description |
+|---|---|---|
+| `configurationId` | string | **Required.** The ID of your outreach configuration. Also accepts `configuration_id` or `CONFIGURATION_ID`. |
+
+You can find the configuration ID in **Settings > Outreach** by selecting your configuration.
+
+## Request formats
+
+The endpoint supports two formats: **raw** and **fixed**.
+
+### Raw format
+
+Send flat key-value pairs alongside `configurationId`. Fields are automatically routed to the appropriate category (contact, application, or conversation) based on your organization's dynamic properties.
 
 ```bash
-curl -X POST https://your-instance.example.com/api/webhook/outreach \
-  -H "Authorization: Bearer <token>" \
+curl -X POST https://app.tetherai.ca/api/webhook/outreach \
+  -H "Authorization: Bearer user_a1b2c3d4..." \
   -H "Content-Type: application/json" \
   -d '{
-    "configurationId": "cfg_123",
-    "phoneNumber": "+15551230000",
+    "configurationId": "682b1f77bcf86cd799439011",
     "firstName": "Jane",
     "lastName": "Doe",
-    "email": "jane@example.com"
+    "email": "jane@example.com",
+    "phoneNumber": "+15551234567"
   }'
 ```
 
+### Fixed format
+
+Explicitly nest data under `contacts`, `applications`, or `conversations` keys for full control over how fields are categorized.
+
+```bash
+curl -X POST https://app.tetherai.ca/api/webhook/outreach \
+  -H "Authorization: Bearer user_a1b2c3d4..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "configurationId": "682b1f77bcf86cd799439011",
+    "contacts": {
+      "firstName": "Jane",
+      "lastName": "Doe",
+      "email": "jane@example.com",
+      "phoneNumber": "+15551234567"
+    },
+    "applications": {
+      "jobTitle": "Software Engineer",
+      "company": "Acme Corp"
+    }
+  }'
+```
+
+## Response codes
+
+| Code | Description |
+|---|---|
+| `200` | Outreach processed successfully. |
+| `400` | Missing `configurationId`, configuration is inactive, or no process/prompt is configured for the user. |
+| `401` | No API key provided or the API key is invalid. |
+| `404` | Configuration not found or does not belong to this user. |
+| `500` | Internal server error. |
+
 <Note>
-  Relay inbound service forwards parsed SendGrid payloads to this endpoint.
+  The outreach configuration must be **active** to accept requests. Inactive configurations return a `400` error.
 </Note>
