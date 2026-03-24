@@ -1536,10 +1536,6 @@ paths:
           required: true
           schema:
             type: "string"
-      security:
-        -
-          bearerAuth:
-            []
   "/api/auth/login":
     post:
       operationId: post_api_auth_login
@@ -1594,25 +1590,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiError"
-  "/api/auth/okta/authorize":
-    get:
-      operationId: "get_api_auth_okta_authorize"
-      summary: "GET /api/auth/okta/authorize"
-      tags:
-        - "Auth"
-      responses:
-        "200":
-          description: "Login successful"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiResponse"
-        "401":
-          description: "Invalid credentials"
-          content:
-            "application/json":
-              schema:
-                "$ref": "#/components/schemas/ApiError"
   "/api/auth/okta/authorize":
     get:
       operationId: "get_auth_okta_authorize"
@@ -5230,18 +5207,18 @@ paths:
           schema:
             type: "string"
       requestBody:
-      required: true
-      content:
-        "application/json":
-          schema:
-            type: "object"
-            required:
-              - isResolved
-            properties:
-              isResolved:
-                type: "boolean"
-                description: "true to resolve the conversation, false to unresolve it"
-                example: "true"
+        required: true
+        content:
+          "application/json":
+            schema:
+              type: "object"
+              required:
+                - isResolved
+              properties:
+                isResolved:
+                  type: "boolean"
+                  description: "true to resolve the conversation, false to unresolve it"
+                  example: "true"
       security:
         -
           bearerAuth:
@@ -8223,24 +8200,31 @@ paths:
   "/api/outreach":
     post:
       operationId: "post_api_outreach"
-      summary: "POST /api/outreach"
+      summary: "Trigger outreach processing for a lead"
+      description: "Accepts lead data and triggers outreach processing for the specified configuration. Authenticated via your API Integration Key (found in Settings > General Settings), not a JWT session token."
       tags:
         - "Outreach"
       responses:
         "200":
-          description: "Successful response"
+          description: "Outreach processed successfully"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiResponse"
         "400":
-          description: "Bad request"
+          description: "Missing configurationId, inactive configuration, or no process/prompt configured"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiError"
         "401":
-          description: "Unauthorized"
+          description: "No API key provided or invalid API key"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiError"
+        "404":
+          description: "Configuration not found or does not belong to this user"
           content:
             "application/json":
               schema:
@@ -8252,12 +8236,15 @@ paths:
               schema:
                 "$ref": "#/components/schemas/ApiError"
       requestBody:
-        required: false
+        required: true
         content:
           "application/json":
             schema:
-              type: "object"
-              additionalProperties: true
+              "$ref": "#/components/schemas/OutreachTriggerRequest"
+      security:
+        -
+          apiKeyAuth:
+            []
   "/api/pipelines":
     get:
       operationId: "get_api_pipelines"
@@ -11544,24 +11531,31 @@ paths:
   "/api/webhook/outreach":
     post:
       operationId: "post_api_webhook_outreach"
-      summary: "POST /api/webhook/outreach"
+      summary: "Trigger outreach processing for a lead"
+      description: "Accepts lead data and triggers outreach processing for the specified configuration. Authenticated via your API Integration Key (found in Settings > General Settings), not a JWT session token."
       tags:
         - "Webhook"
       responses:
         "200":
-          description: "Successful response"
+          description: "Outreach processed successfully"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiResponse"
         "400":
-          description: "Bad request"
+          description: "Missing configurationId, inactive configuration, or no process/prompt configured"
           content:
             "application/json":
               schema:
                 "$ref": "#/components/schemas/ApiError"
         "401":
-          description: "Unauthorized"
+          description: "No API key provided or invalid API key"
+          content:
+            "application/json":
+              schema:
+                "$ref": "#/components/schemas/ApiError"
+        "404":
+          description: "Configuration not found or does not belong to this user"
           content:
             "application/json":
               schema:
@@ -11573,12 +11567,15 @@ paths:
               schema:
                 "$ref": "#/components/schemas/ApiError"
       requestBody:
-        required: false
+        required: true
         content:
           "application/json":
             schema:
-              type: "object"
-              additionalProperties: true
+              "$ref": "#/components/schemas/OutreachTriggerRequest"
+      security:
+        -
+          apiKeyAuth:
+            []
   "/api/webhook/sinch/delivery-receipt":
     post:
       operationId: "post_api_webhook_sinch_delivery_receipt"
@@ -12257,6 +12254,10 @@ components:
       type: "http"
       scheme: "bearer"
       bearerFormat: "JWT"
+    apiKeyAuth:
+      type: "http"
+      scheme: "bearer"
+      description: "API Integration Key from Settings > General Settings. Pass as: Authorization: Bearer <your-api-key>"
   schemas:
     ApiResponse:
       type: "object"
@@ -12271,6 +12272,46 @@ components:
         code:
           type: "string"
       description: "Generic error envelope. Endpoint-specific fields are intentionally open."
+    OutreachTriggerRequest:
+      type: "object"
+      required:
+        - configurationId
+      properties:
+        configurationId:
+          type: "string"
+          description: "The ID of your outreach configuration (from Settings > Outreach). Also accepts `configuration_id` or `CONFIGURATION_ID`."
+        phoneNumber:
+          type: "string"
+          description: "Contact phone number."
+        email:
+          type: "string"
+          description: "Contact email address."
+        firstName:
+          type: "string"
+          description: "Contact first name."
+        lastName:
+          type: "string"
+          description: "Contact last name."
+        name:
+          type: "string"
+          description: "Contact full name (alternative to firstName/lastName)."
+        contactId:
+          type: "string"
+          description: "Existing contact ID to link to."
+        contacts:
+          type: "object"
+          additionalProperties: true
+          description: "Fixed format — explicitly provide contact fields nested under this key."
+        applications:
+          type: "object"
+          additionalProperties: true
+          description: "Fixed format — explicitly provide application fields nested under this key."
+        conversations:
+          type: "object"
+          additionalProperties: true
+          description: "Fixed format — explicitly provide conversation fields nested under this key."
+      additionalProperties: true
+      description: "Lead data for outreach processing. Supports two formats: **raw** (flat key-value pairs that are auto-routed) or **fixed** (data nested under `contacts`, `applications`, `conversations` keys)."
     AIPlaygroundRequest:
       type: "object"
       properties:
